@@ -1,13 +1,16 @@
 {
     "name": "mewtonium/vanguard",
-    "description": "A simple form validation library using PHP attributes.",
+    "description": "A simple validation library using PHP attributes.",
     "type": "library",
     "license": "MIT",
     "version": "0.1.0",
     "autoload": {
         "psr-4": {
             "Mewtonium\\Vanguard\\": "src/"
-        }
+        },
+        "files": [
+            "utils/helpers.php"
+        ]
     },
     "authors": [
         {
