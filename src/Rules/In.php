@@ -8,8 +8,10 @@ use Mewtonium\Vanguard\Exceptions\RuleException;
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 final class In implements Rule
 {
-    public function __construct(protected array $in = [])
-    {
+    public function __construct(
+        protected array $in = [],
+        protected ?string $message = null,
+    ) {
         if (count($in) === 0) {
             throw new RuleException('The [' . class_basename($this) . '] rule must have at least one value to check against.');
         }

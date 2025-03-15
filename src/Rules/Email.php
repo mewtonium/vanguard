@@ -7,6 +7,12 @@ use Mewtonium\Vanguard\Contracts\Rule;
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 final class Email implements Rule
 {
+    public function __construct(
+        protected ?string $message = null,
+    ) {
+        //
+    }
+
     public function passes(mixed $value): bool
     {
         return filter_var($value, FILTER_VALIDATE_EMAIL);

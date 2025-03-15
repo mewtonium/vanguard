@@ -11,6 +11,7 @@ final class Between implements Rule
         protected float $from,
         protected float $to,
         protected bool $inclusive = true,
+        protected ?string $message = null,
     ) {
         //
     }

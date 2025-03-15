@@ -7,8 +7,10 @@ use Mewtonium\Vanguard\Contracts\Rule;
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 final class Max implements Rule
 {
-    public function __construct(protected int $length)
-    {
+    public function __construct(
+        protected int $length,
+        protected ?string $message = null,
+    ) {
         //
     }
 

@@ -7,6 +7,12 @@ use Mewtonium\Vanguard\Contracts\Rule;
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 final class Required implements Rule
 {
+    public function __construct(
+        protected ?string $message = null,
+    ) {
+        //
+    }
+
     public function passes(mixed $value): bool
     {
         if (is_string($value)) {

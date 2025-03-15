@@ -35,7 +35,11 @@ trait Vanguard
                 $rule = $attribute->newInstance();
 
                 if (! $rule->passes($value)) {
-                    $this->errors[$property->getName()][class_basename($rule)] = $rule->message($property->getName(), $value);
+                    $message = array_key_exists('message', $arguments = $attribute->getArguments())
+                        ? $arguments['message']
+                        : $rule->message($property->getName(), $value);
+
+                    $this->errors[$property->getName()][class_basename($rule)] = $message;
                 }
             }
         }

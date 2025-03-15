@@ -7,8 +7,10 @@ use Mewtonium\Vanguard\Contracts\Rule;
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 final class Equal implements Rule
 {
-    public function __construct(protected float|int|string $value)
-    {
+    public function __construct(
+        protected float|int|string $value,
+        protected ?string $message = null,
+    ) {
         //
     }
 

@@ -52,7 +52,7 @@ class AccountSignupForm
         #[Required, Min(2), Max(255)]
         protected string $firstName,
         
-        #[Required, Min(2), Max(255)]
+        #[Required(message: 'Please provide your last name.'), Min(2), Max(255)]
         protected string $lastName,
 
         #[Required, Between(18, 99)]
@@ -89,7 +89,7 @@ if ($form->invalid()) {
      * 
      * [
      *     'lastName' => [
-     *         'Required' => 'The lastName field is required.',
+     *         'Required' => 'Please provide your last name.',
      *         'Min' => 'The lastName field must be a minimum of 2 characters long.',
      *     ],
      *     'age' => [,

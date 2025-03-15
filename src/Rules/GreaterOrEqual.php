@@ -7,8 +7,10 @@ use Mewtonium\Vanguard\Contracts\Rule;
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 final class GreaterOrEqual implements Rule
 {
-    public function __construct(protected float|int $number)
-    {
+    public function __construct(
+        protected float|int $number,
+        protected ?string $message = null,
+    ) {
         //
     }
 
