@@ -80,25 +80,33 @@ $form = new AccountSignupForm(...$data);
 $form->validate();
 
 if ($form->invalid()) {
-    foreach ($form->errors() as $error) {
-        // do something...
-    }
+    $errors = $form->errors(); // Returns an instance of `ErrorBag`
 
     /**
-     * The above incorrect form data will result in these validation errors:
+     * ErrorBag methods:
+     * 
+     * $errors->all() // returns an list of all errors
+     * $errors->get($field) // fetches errors by field
+     * $errors->first($field) // finds the first error by field
+     * $errors->add($field, $file, $message) // adds an error to the bag
+     * $errors->has($field) // checks if an error exists in the bag by field
+     * $errors->count() // returns count of all errors
+     * $errors->flush() // removes all errors from the bag
+     *
+     * Calling $errors->all() for the above data will return:
      * 
      * [
      *     'lastName' => [
-     *         'Required' => 'Please provide your last name.',
+     *         'Required' => 'Please provide your first name.',
      *         'Min' => 'The lastName field must be a minimum of 2 characters long.',
      *     ],
-     *     'age' => [,
+     *     'age' => [
      *         'Between' => 'The age field must be between 18 and 99.',
      *     ],
-     *     'email' => [,
+     *     'email' => [
      *         'Email' => 'The email field must be a valid email.',
      *     ],
-     *     'country' => [,
+     *     'country' => [
      *         'In' => 'The country field does not have a valid selection.',
      *     ]
      * ]

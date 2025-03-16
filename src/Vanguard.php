@@ -7,15 +7,17 @@ use Mewtonium\Vanguard\Contracts\Rule;
 trait Vanguard
 {
     /**
-     * The validation errors.
+     * The validation error bag.
      */
-    protected array $errors = [];
+    protected ErrorBag $errors;
 
     /**
      * Validate properties marked with `Rule` attributes.
      */
     public function validate(): void
     {
+        $this->errors ??= new ErrorBag; 
+
         $reflection = new \ReflectionClass($this);
 
         foreach ($reflection->getProperties() as $property) {
@@ -35,20 +37,30 @@ trait Vanguard
                 $rule = $attribute->newInstance();
 
                 if (! $rule->passes($value)) {
-                    $message = array_key_exists('message', $arguments = $attribute->getArguments())
-                        ? $arguments['message']
-                        : $rule->message($property->getName(), $value);
-
-                    $this->errors[$property->getName()][class_basename($rule)] = $message;
+                    $this->errors->add(
+                        field: $property->getName(),
+                        rule: class_basename($rule),
+                        message: $this->getMessage($attribute, $rule, $property, $value),
+                    );
                 }
             }
         }
     }
 
     /**
-     * Get a list of validation errors.
+     * Get the `Rule` default or custom validation message.
      */
-    public function errors(): array
+    protected function getMessage(\ReflectionAttribute $attribute, Rule $rule, \ReflectionProperty $property, mixed $value): string
+    {
+        return array_key_exists('message', $arguments = $attribute->getArguments())
+            ? $arguments['message']
+            : $rule->message($property->getName(), $value);
+    }
+
+    /**
+     * Fetches the validation error bag.
+     */
+    public function errors(): ErrorBag
     {
         return $this->errors;
     }
@@ -58,6 +70,6 @@ trait Vanguard
      */
     public function invalid(): bool
     {
-        return count($this->errors()) > 0;
+        return $this->errors->count() > 0;
     }
 }
