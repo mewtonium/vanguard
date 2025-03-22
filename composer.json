@@ -12,6 +12,11 @@
             "utils/helpers.php"
         ]
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Mewtonium\\Vanguard\\Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "Mark Wilkinson",
@@ -23,6 +28,12 @@
         "php": ">=8.3"
     },
     "require-dev": {
-        "symfony/var-dumper": "^7.2"
+        "symfony/var-dumper": "^7.2",
+        "pestphp/pest": "^3.7"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
     }
 }
