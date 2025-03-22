@@ -2,21 +2,20 @@
 
 namespace Mewtonium\Vanguard\Rules;
 
-use Mewtonium\Vanguard\Contracts\Rule;
+use Mewtonium\Vanguard\Rules\Rule;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class Required implements Rule
+final class Required extends Rule
 {
-    public function __construct(
-        protected ?string $message = null,
-    ) {
-        //
+    public function __construct(?string $message = null)
+    {
+        parent::__construct($message);
     }
 
     public function passes(mixed $value): bool
     {
         if (is_string($value)) {
-            return $value !== '';
+            return trim($value) !== '';
         }
 
         if (is_array($value)) {
@@ -26,8 +25,8 @@ final class Required implements Rule
         return $value !== null;
     }
 
-    public function message(string $field, mixed $value): string
+    public function message(): string
     {
-        return "The {$field} field is required.";
+        return "The {$this->field} field is required.";
     }
 }
