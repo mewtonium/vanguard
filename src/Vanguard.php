@@ -2,7 +2,7 @@
 
 namespace Mewtonium\Vanguard;
 
-use Mewtonium\Vanguard\Contracts\Rule;
+use Mewtonium\Vanguard\Rules\Rule;
 
 trait Vanguard
 {
@@ -36,25 +36,18 @@ trait Vanguard
                 /** @var Rule */
                 $rule = $attribute->newInstance();
 
+                $this->setRuleProperty($rule, 'field', $property->getName());
+                $this->setRuleProperty($rule, 'value', $value);
+
                 if (! $rule->passes($value)) {
                     $this->errors->add(
                         field: $property->getName(),
                         rule: class_basename($rule),
-                        message: $this->getMessage($attribute, $rule, $property, $value),
+                        message: $rule->getMessage(),
                     );
                 }
             }
         }
-    }
-
-    /**
-     * Get the `Rule` default or custom validation message.
-     */
-    protected function getMessage(\ReflectionAttribute $attribute, Rule $rule, \ReflectionProperty $property, mixed $value): string
-    {
-        return array_key_exists('message', $arguments = $attribute->getArguments())
-            ? $arguments['message']
-            : $rule->message($property->getName(), $value);
     }
 
     /**
@@ -71,5 +64,17 @@ trait Vanguard
     public function invalid(): bool
     {
         return $this->errors->count() > 0;
+    }
+
+    /**
+     * Sets a property on the base `Rule` instance using Reflection.
+     */
+    private function setRuleProperty(Rule &$rule, string $name, mixed $value): void
+    {
+        $reflection = new \ReflectionObject($rule);
+
+        $property = $reflection->getProperty($name);
+        $property->setAccessible(true);
+        $property->setValue($rule, $value);
     }
 }
