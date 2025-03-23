@@ -2,38 +2,35 @@
 
 namespace Mewtonium\Vanguard\Rules;
 
-use Mewtonium\Vanguard\Contracts\Rule;
+use Mewtonium\Vanguard\Rules\Rule;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class Between implements Rule
+final class Between extends Rule
 {
     public function __construct(
-        protected float $from,
-        protected float $to,
-        protected bool $inclusive = true,
-        protected ?string $message = null,
+        protected int|float $min,
+        protected int|float $max,
+        ?string $message = null,
     ) {
-        //
+        parent::__construct($message);
     }
 
     public function passes(mixed $value): bool
     {
         if (is_numeric($value)) {
-            return $this->inclusive
-                ? $value >= $this->from && $value <= $this->to
-                : $value > $this->from && $value < $this->to;
+            return $value >= $this->min && $value <= $this->max;
         }
 
         return false;
     }
 
-    public function message(string $field, mixed $value): string
+    public function message(): string
     {
         return sprintf(
             'The %s field must be between %s and %s.',
-            $field,
-            $this->from,
-            $this->to,
+            $this->ruleField,
+            $this->min,
+            $this->max,
         );
     }
 }

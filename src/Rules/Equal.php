@@ -2,16 +2,16 @@
 
 namespace Mewtonium\Vanguard\Rules;
 
-use Mewtonium\Vanguard\Contracts\Rule;
+use Mewtonium\Vanguard\Rules\Rule;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class Equal implements Rule
+final class Equal extends Rule
 {
     public function __construct(
         protected float|int|string $value,
-        protected ?string $message = null,
+        ?string $message = null,
     ) {
-        //
+        parent::__construct($message);
     }
 
     public function passes(mixed $value): bool
@@ -23,12 +23,12 @@ final class Equal implements Rule
         return false;
     }
 
-    public function message(string $field, mixed $value): string
+    public function message(): string
     {
         return sprintf(
             'The %s field must be equal to %s.',
-            $field,
-            is_string($value) ? "'{$this->value}'" : $this->value,
+            $this->ruleField,
+            is_string($this->value) ? "'{$this->value}'" : $this->value,
         );
     }
 }

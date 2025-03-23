@@ -2,33 +2,33 @@
 
 namespace Mewtonium\Vanguard\Rules;
 
-use Mewtonium\Vanguard\Contracts\Rule;
+use Mewtonium\Vanguard\Rules\Rule;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class GreaterThan implements Rule
+final class GreaterThan extends Rule
 {
     public function __construct(
-        protected float|int $number,
-        protected ?string $message = null,
+        protected float|int $value,
+        ?string $message = null,
     ) {
-        //
+        parent::__construct($message);
     }
 
     public function passes(mixed $value): bool
     {
         if (is_numeric($value)) {
-            return $value > $this->number;
+            return $value > $this->value;
         }
 
         return false;
     }
 
-    public function message(string $field, mixed $value): string
+    public function message(): string
     {
         return sprintf(
             'The %s field must be greater than %s.',
-            $field,
-            $this->number,
+            $this->ruleField,
+            $this->value,
         );
     }
 }

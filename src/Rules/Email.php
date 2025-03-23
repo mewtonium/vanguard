@@ -2,15 +2,14 @@
 
 namespace Mewtonium\Vanguard\Rules;
 
-use Mewtonium\Vanguard\Contracts\Rule;
+use Mewtonium\Vanguard\Rules\Rule;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class Email implements Rule
+final class Email extends Rule
 {
-    public function __construct(
-        protected ?string $message = null,
-    ) {
-        //
+    public function __construct(?string $message = null)
+    {
+        parent::__construct($message);
     }
 
     public function passes(mixed $value): bool
@@ -18,8 +17,8 @@ final class Email implements Rule
         return filter_var($value, FILTER_VALIDATE_EMAIL);
     }
 
-    public function message(string $field, mixed $value): string
+    public function message(): string
     {
-        return "The {$field} field must be a valid email.";
+        return "The {$this->ruleField} field must be a valid email.";
     }
 }

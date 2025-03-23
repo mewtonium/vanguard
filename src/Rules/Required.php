@@ -27,6 +27,6 @@ final class Required extends Rule
 
     public function message(): string
     {
-        return "The {$this->field} field is required.";
+        return "The {$this->ruleField} field is required.";
     }
 }

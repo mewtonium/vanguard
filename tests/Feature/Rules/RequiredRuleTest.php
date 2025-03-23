@@ -2,7 +2,7 @@
 
 use Mewtonium\Vanguard\Tests\Fixtures\Rules\RequiredRuleForm;
 
-test('the rule validates', function () {
+test('the rule passes validation', function () {
     $form = new RequiredRuleForm(
         str1: 'Test',
         str2: 'Example',
@@ -13,7 +13,7 @@ test('the rule validates', function () {
     expect($form->errors()->count())->toBe(0);
 });
 
-test('the rule is invalid if a required value is missing', function () {
+test('the rule fails validation', function () {
     $form = new RequiredRuleForm(
         str1: '',
         str2: 'Example',

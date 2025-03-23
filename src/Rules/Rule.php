@@ -7,12 +7,12 @@ abstract class Rule
     /**
      * The field under validation by this rule.
      */
-    protected string $field;
+    protected string $ruleField;
 
     /**
      * The value under validation by this rule.
      */
-    protected mixed $value;
+    protected mixed $ruleValue;
 
     /**
      * Create a new instance of this rule.
