@@ -1,6 +1,6 @@
 <?php
 
-use Mewtonium\Vanguard\Tests\Fixtures\Rules\EmailRuleForm;
+use Mewtonium\Vanguard\Tests\Fixtures\Forms\EmailRuleForm;
 
 test('the rule passes validation', function () {
     $form = new EmailRuleForm(

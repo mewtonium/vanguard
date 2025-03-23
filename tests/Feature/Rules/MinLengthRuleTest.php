@@ -1,6 +1,6 @@
 <?php
 
-use Mewtonium\Vanguard\Tests\Fixtures\Rules\MinLengthRuleForm;
+use Mewtonium\Vanguard\Tests\Fixtures\Forms\MinLengthRuleForm;
 
 test('the rule passes validation', function () {
     $form = new MinLengthRuleForm(

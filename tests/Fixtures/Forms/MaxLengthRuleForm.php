@@ -1,6 +1,6 @@
 <?php
 
-namespace Mewtonium\Vanguard\Tests\Fixtures\Rules;
+namespace Mewtonium\Vanguard\Tests\Fixtures\Forms;
 
 use Mewtonium\Vanguard\Rules\MaxLength;
 use Mewtonium\Vanguard\Vanguard;

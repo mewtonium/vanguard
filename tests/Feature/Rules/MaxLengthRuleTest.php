@@ -1,6 +1,6 @@
 <?php
 
-use Mewtonium\Vanguard\Tests\Fixtures\Rules\MaxLengthRuleForm;
+use Mewtonium\Vanguard\Tests\Fixtures\Forms\MaxLengthRuleForm;
 
 test('the rule passes validation', function () {
     $form = new MaxLengthRuleForm(

@@ -1,6 +1,6 @@
 <?php
 
-use Mewtonium\Vanguard\Tests\Fixtures\Rules\RequiredRuleForm;
+use Mewtonium\Vanguard\Tests\Fixtures\Forms\RequiredRuleForm;
 
 test('the rule passes validation', function () {
     $form = new RequiredRuleForm(

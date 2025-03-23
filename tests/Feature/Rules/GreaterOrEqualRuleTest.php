@@ -1,6 +1,6 @@
 <?php
 
-use Mewtonium\Vanguard\Tests\Fixtures\Rules\GreaterOrEqualRuleForm;
+use Mewtonium\Vanguard\Tests\Fixtures\Forms\GreaterOrEqualRuleForm;
 
 test('the rule passes validation', function () {
     $form = new GreaterOrEqualRuleForm(

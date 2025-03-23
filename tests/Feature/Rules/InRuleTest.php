@@ -3,7 +3,7 @@
 use Mewtonium\Vanguard\Exceptions\RuleException;
 use Mewtonium\Vanguard\Rules\In;
 use Mewtonium\Vanguard\Vanguard;
-use Mewtonium\Vanguard\Tests\Fixtures\Rules\InRuleForm;
+use Mewtonium\Vanguard\Tests\Fixtures\Forms\InRuleForm;
 
 test('the rule passes validation', function () {
     $form = new InRuleForm(

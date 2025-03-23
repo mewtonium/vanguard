@@ -1,6 +1,6 @@
 <?php
 
-use Mewtonium\Vanguard\Tests\Fixtures\Rules\BetweenRuleForm;
+use Mewtonium\Vanguard\Tests\Fixtures\Forms\BetweenRuleForm;
 
 test('the rule passes validation', function () {
     $form = new BetweenRuleForm(

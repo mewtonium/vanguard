@@ -1,6 +1,6 @@
 <?php
 
-use Mewtonium\Vanguard\Tests\Fixtures\Rules\GreaterThanRuleForm;
+use Mewtonium\Vanguard\Tests\Fixtures\Forms\GreaterThanRuleForm;
 
 test('the rule passes validation', function () {
     $form = new GreaterThanRuleForm(
