@@ -2,16 +2,16 @@
 
 namespace Mewtonium\Vanguard\Rules;
 
-use Mewtonium\Vanguard\Contracts\Rule;
+use Mewtonium\Vanguard\Rules\Rule;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class Min implements Rule
+final class MinLength extends Rule
 {
     public function __construct(
         protected int $length,
-        protected ?string $message = null,
+        ?string $message = null,
     ) {
-        //
+        parent::__construct($message);
     }
 
     public function passes(mixed $value): bool
@@ -27,14 +27,14 @@ final class Min implements Rule
         return false;
     }
 
-    public function message(string $field, mixed $value): string
+    public function message(): string
     {
         return sprintf(
             'The %s field must be a minimum of %s %s %s.',
-            $field,
+            $this->ruleField,
             $this->length,
-            is_array($value) ? 'items' : 'characters',
-            is_array($value) ? 'in size' : 'long',
+            is_array($this->ruleValue) ? 'items' : 'characters',
+            is_array($this->ruleValue) ? 'in size' : 'long',
         );
     }
 }
