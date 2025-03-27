@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mewtonium\Vanguard\Rules;
 
-use Mewtonium\Vanguard\Rules\Rule;
+use Attribute;
 use Mewtonium\Vanguard\Contracts\ValidatesDates;
 use Mewtonium\Vanguard\Exceptions\RuleException;
 
-#[\Attribute(\Attribute::TARGET_PROPERTY)]
+#[Attribute(Attribute::TARGET_PROPERTY)]
 final class Equal extends Rule implements ValidatesDates
 {
     public function __construct(

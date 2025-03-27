@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mewtonium\Vanguard\Rules;
 
-use Mewtonium\Vanguard\Rules\Rule;
+use Attribute;
 
-#[\Attribute(\Attribute::TARGET_PROPERTY)]
+#[Attribute(Attribute::TARGET_PROPERTY)]
 final class Email extends Rule
 {
     public function __construct(?string $message = null)

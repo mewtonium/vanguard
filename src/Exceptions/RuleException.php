@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mewtonium\Vanguard\Exceptions;
 
-class RuleException extends \Exception
+use Exception;
+
+final class RuleException extends Exception
 {
     //
 }

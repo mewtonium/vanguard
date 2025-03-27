@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mewtonium\Vanguard\Rules;
 
-use Mewtonium\Vanguard\Rules\Rule;
+use Attribute;
+use DateTimeInterface;
 use Mewtonium\Vanguard\Contracts\ValidatesDates;
 use Mewtonium\Vanguard\Exceptions\RuleException;
 
-#[\Attribute(\Attribute::TARGET_PROPERTY)]
+#[Attribute(Attribute::TARGET_PROPERTY)]
 final class Between extends Rule implements ValidatesDates
 {
     public function __construct(
@@ -23,7 +26,7 @@ final class Between extends Rule implements ValidatesDates
             return $value >= $this->min && $value <= $this->max;
         }
 
-        if (is_string($value) || $value instanceof \DateTimeInterface) {
+        if (is_string($value) || $value instanceof DateTimeInterface) {
             return $this->validateDate();
         }
 
@@ -45,7 +48,7 @@ final class Between extends Rule implements ValidatesDates
         if (is_null($min = to_date($this->min)) || is_null($max = to_date($this->max))) {
             throw new RuleException('Both `min` and `max` set on the [' . class_basename($this) . '] rule must be valid date strings.');
         }
-        
+
         if (is_null($ruleValue = to_date($this->ruleValue))) {
             throw new RuleException('The value passed into the [' . class_basename($this) . '] rule to validate is not a valid date string.');
         }

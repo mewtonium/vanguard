@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mewtonium\Vanguard\Rules;
 
-use Mewtonium\Vanguard\Rules\Rule;
+use Attribute;
+use DateTimeInterface;
 use Mewtonium\Vanguard\Contracts\ValidatesDates;
 use Mewtonium\Vanguard\Exceptions\RuleException;
 
-#[\Attribute(\Attribute::TARGET_PROPERTY)]
+#[Attribute(Attribute::TARGET_PROPERTY)]
 final class LessThan extends Rule implements ValidatesDates
 {
     public function __construct(
@@ -22,7 +25,7 @@ final class LessThan extends Rule implements ValidatesDates
             return $value < $this->value;
         }
 
-        if (is_string($value) || $value instanceof \DateTimeInterface) {
+        if (is_string($value) || $value instanceof DateTimeInterface) {
             return $this->validateDate();
         }
 

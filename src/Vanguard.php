@@ -1,8 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mewtonium\Vanguard;
 
 use Mewtonium\Vanguard\Rules\Rule;
+use ReflectionAttribute;
+use ReflectionClass;
+use ReflectionObject;
 
 trait Vanguard
 {
@@ -16,9 +21,9 @@ trait Vanguard
      */
     public function validate(): void
     {
-        $this->errors ??= new ErrorBag; 
+        $this->errors ??= new ErrorBag();
 
-        $reflection = new \ReflectionClass($this);
+        $reflection = new ReflectionClass($this);
 
         foreach ($reflection->getProperties() as $property) {
             if (! $property->isInitialized($this)) {
@@ -29,7 +34,7 @@ trait Vanguard
 
             $attributes = $property->getAttributes(
                 Rule::class,
-                \ReflectionAttribute::IS_INSTANCEOF,
+                ReflectionAttribute::IS_INSTANCEOF,
             );
 
             foreach ($attributes as $attribute) {
@@ -71,7 +76,7 @@ trait Vanguard
      */
     private function setRuleProperty(Rule &$rule, string $name, mixed $value): void
     {
-        $reflection = new \ReflectionObject($rule);
+        $reflection = new ReflectionObject($rule);
 
         $property = $reflection->getProperty($name);
         $property->setAccessible(true);

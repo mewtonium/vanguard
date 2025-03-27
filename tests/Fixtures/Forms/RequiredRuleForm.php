@@ -1,17 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mewtonium\Vanguard\Tests\Fixtures\Forms;
 
-use Mewtonium\Vanguard\Vanguard;
 use Mewtonium\Vanguard\Rules\Required;
+use Mewtonium\Vanguard\Vanguard;
 
-class RequiredRuleForm {
+final class RequiredRuleForm
+{
     use Vanguard;
 
     public function __construct(
         #[Required]
         protected string $str1,
-        
         #[Required(message: 'Please provide str2.')]
         protected string $str2,
     ) {

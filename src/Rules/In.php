@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mewtonium\Vanguard\Rules;
 
-use Mewtonium\Vanguard\Rules\Rule;
+use Attribute;
 use Mewtonium\Vanguard\Exceptions\RuleException;
 
-#[\Attribute(\Attribute::TARGET_PROPERTY)]
+#[Attribute(Attribute::TARGET_PROPERTY)]
 final class In extends Rule
 {
     public function __construct(
