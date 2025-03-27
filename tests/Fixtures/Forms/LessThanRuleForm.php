@@ -17,6 +17,9 @@ class LessThanRuleForm {
 
         #[LessThan(10, message: 'You must pick a number less than 10')]
         protected int $num3,
+
+        #[LessThan('2025-01-01')]
+        protected string $date,
     ) {
         //
     }

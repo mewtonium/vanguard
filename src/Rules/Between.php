@@ -3,13 +3,15 @@
 namespace Mewtonium\Vanguard\Rules;
 
 use Mewtonium\Vanguard\Rules\Rule;
+use Mewtonium\Vanguard\Contracts\ValidatesDates;
+use Mewtonium\Vanguard\Exceptions\RuleException;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class Between extends Rule
+final class Between extends Rule implements ValidatesDates
 {
     public function __construct(
-        protected int|float $min,
-        protected int|float $max,
+        protected int|float|string $min,
+        protected int|float|string $max,
         ?string $message = null,
     ) {
         parent::__construct($message);
@@ -17,8 +19,12 @@ final class Between extends Rule
 
     public function passes(mixed $value): bool
     {
-        if (is_numeric($value)) {
+        if (is_numeric($value) && is_numeric($this->min) && is_numeric($this->max)) {
             return $value >= $this->min && $value <= $this->max;
+        }
+
+        if (is_string($value) || $value instanceof \DateTimeInterface) {
+            return $this->validateDate();
         }
 
         return false;
@@ -32,5 +38,29 @@ final class Between extends Rule
             $this->min,
             $this->max,
         );
+    }
+
+    public function validateDate(): bool
+    {
+        try {
+            $min = new \DateTimeImmutable($this->min);
+            $max = new \DateTimeImmutable($this->max);
+        } catch (\DateException $e) {
+            throw new RuleException('Both `min` and `max` set on the [' . class_basename($this) . '] rule must be valid date strings.');
+        }
+
+        if ($min > $max || $max < $min) {
+            throw new RuleException('Date range set on the [' . class_basename($this) . '] rule is invalid.');
+        }
+
+        if (is_string($value = $this->ruleValue)) {
+            try {
+                $value = new \DateTimeImmutable($value);
+            } catch (\DateException $e) {
+                throw new RuleException('The value passed into the [' . class_basename($this) . '] rule to validate is not a valid date string.');
+            }
+        }
+
+        return $value >= $min && $value <= $max;
     }
 }

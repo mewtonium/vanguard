@@ -17,6 +17,9 @@ class GreaterOrEqualRuleForm {
 
         #[GreaterOrEqual(10, message: 'You must pick a number greater or equal to 10')]
         protected int $num3,
+
+        #[GreaterOrEqual('2025-01-01')]
+        protected string $date,
     ) {
         //
     }

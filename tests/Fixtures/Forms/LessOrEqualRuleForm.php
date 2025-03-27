@@ -17,6 +17,9 @@ class LessOrEqualRuleForm {
 
         #[LessOrEqual(10, message: 'You must pick a number less or equal to 10')]
         protected int $num3,
+
+        #[LessOrEqual('2025-01-01')]
+        protected string $date,
     ) {
         //
     }
