@@ -42,25 +42,18 @@ final class Between extends Rule implements ValidatesDates
 
     public function validateDate(): bool
     {
-        try {
-            $min = new \DateTimeImmutable($this->min);
-            $max = new \DateTimeImmutable($this->max);
-        } catch (\DateException $e) {
+        if (is_null($min = to_date($this->min)) || is_null($max = to_date($this->max))) {
             throw new RuleException('Both `min` and `max` set on the [' . class_basename($this) . '] rule must be valid date strings.');
+        }
+        
+        if (is_null($ruleValue = to_date($this->ruleValue))) {
+            throw new RuleException('The value passed into the [' . class_basename($this) . '] rule to validate is not a valid date string.');
         }
 
         if ($min > $max || $max < $min) {
             throw new RuleException('Date range set on the [' . class_basename($this) . '] rule is invalid.');
         }
 
-        if (is_string($value = $this->ruleValue)) {
-            try {
-                $value = new \DateTimeImmutable($value);
-            } catch (\DateException $e) {
-                throw new RuleException('The value passed into the [' . class_basename($this) . '] rule to validate is not a valid date string.');
-            }
-        }
-
-        return $value >= $min && $value <= $max;
+        return $ruleValue >= $min && $ruleValue <= $max;
     }
 }

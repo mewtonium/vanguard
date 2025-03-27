@@ -10,3 +10,20 @@ if (! function_exists('class_basename')) {
         return basename(str_replace('\\', '/', $class));
     }
 }
+
+if (! function_exists('to_date')) {
+    /**
+     * Creates a `DateTime` instance from the given date string.
+     */
+    function to_date(string $datetime, bool $immutable = true): ?\DateTimeInterface {
+        try {
+            $date = $immutable
+                ? new \DateTimeImmutable($datetime)
+                : new \DateTime($datetime);
+        } catch (\DateException $e) {
+            return null;
+        }
+
+        return $date;
+    }
+}

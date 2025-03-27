@@ -11,3 +11,11 @@ test('the `class_basename` helper works correctly', function () {
     expect(class_basename(\stdClass::class))->toBe('stdClass');
     expect(class_basename((object) [1, 2, 3]))->toBe('stdClass');
 });
+
+test('the `to_date` helper works correctly', function () {
+    expect(to_date('2025-01-01'))->toBeInstanceOf(\DateTimeInterface::class);
+    expect(to_date('2025-01-01', immutable: true))->toBeInstanceOf(\DateTimeImmutable::class);
+    expect(to_date('2025-01-01', immutable: false))->toBeInstanceOf(\DateTime::class);
+
+    expect(to_date('not-valid'))->toBeNull();
+});

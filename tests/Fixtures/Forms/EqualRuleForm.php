@@ -18,8 +18,11 @@ class EqualRuleForm {
         #[Equal('test')]
         protected string $str1,
 
-        #[Equal('testing', message: 'str2 must equal "testing"')]
+        #[Equal('testing', message: 'The value must equal "testing"')]
         protected string $str2,
+
+        #[Equal('2025-01-01')]
+        protected string $date,
     ) {
         //
     }

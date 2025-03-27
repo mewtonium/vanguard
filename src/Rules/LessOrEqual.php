@@ -40,20 +40,14 @@ final class LessOrEqual extends Rule implements ValidatesDates
 
     public function validateDate(): bool
     {
-        try {
-            $date = new \DateTimeImmutable($this->value);
-        } catch (\DateException $e) {
+        if (is_null($value = to_date($this->value))) {
             throw new RuleException('The value set on the [' . class_basename($this) . '] rule must be a valid date string.');
         }
 
-        if (is_string($value = $this->ruleValue)) {
-            try {
-                $value = new \DateTimeImmutable($value);
-            } catch (\DateException $e) {
-                throw new RuleException('The value passed into the [' . class_basename($this) . '] rule to validate is not a valid date string.');
-            }
+        if (is_null($ruleValue = to_date($this->ruleValue))) {
+            throw new RuleException('The value passed into the [' . class_basename($this) . '] rule to validate is not a valid date string.');
         }
 
-        return $value <= $date;
+        return $ruleValue <= $value;
     }
 }
