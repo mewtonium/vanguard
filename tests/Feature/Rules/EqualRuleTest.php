@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 use Mewtonium\Vanguard\Tests\Fixtures\Forms\EqualRuleForm;
 
-test('the rule passes validation', function () {
+test('the rule passes validation', function (): void {
     $form = new EqualRuleForm(
         num1: 10,
         num2: 3.495,
@@ -16,7 +18,7 @@ test('the rule passes validation', function () {
     expect($form->errors()->count())->toBe(0);
 });
 
-test('the rule fails validation', function () {
+test('the rule fails validation', function (): void {
     $form = new EqualRuleForm(
         num1: 100,
         num2: 3.495,
@@ -37,7 +39,7 @@ test('the rule fails validation', function () {
     expect(array_key_exists('Equal', $form->errors()->get('date')))->toBeTrue();
 });
 
-test('a custom validation message can be set', function () {
+test('a custom validation message can be set', function (): void {
     $form = new EqualRuleForm(
         num1: 10,
         num2: 3.495,

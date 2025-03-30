@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 use Mewtonium\Vanguard\Tests\Fixtures\Forms\MinLengthRuleForm;
 
-test('the rule passes validation', function () {
+test('the rule passes validation', function (): void {
     $form = new MinLengthRuleForm(
         val1: 'testing',
         val2: [1, 2, 3, 4, 5],
@@ -16,7 +18,7 @@ test('the rule passes validation', function () {
     expect($form->errors()->count())->toBe(0);
 });
 
-test('the rule fails validation', function () {
+test('the rule fails validation', function (): void {
     $form = new MinLengthRuleForm(
         val1: 'testing',
         val2: [1, 2, 3, 4, 5],
@@ -34,7 +36,7 @@ test('the rule fails validation', function () {
     expect(array_key_exists('MinLength', $form->errors()->get('val4')))->toBeTrue();
 });
 
-test('a custom validation message can be set', function () {
+test('a custom validation message can be set', function (): void {
     $form = new MinLengthRuleForm(
         val1: 'testing',
         val2: [1, 2, 3, 4, 5],

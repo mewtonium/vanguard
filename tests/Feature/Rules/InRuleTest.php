@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 use Mewtonium\Vanguard\Exceptions\RuleException;
 use Mewtonium\Vanguard\Rules\In;
-use Mewtonium\Vanguard\Vanguard;
 use Mewtonium\Vanguard\Tests\Fixtures\Forms\InRuleForm;
+use Mewtonium\Vanguard\Vanguard;
 
-test('the rule passes validation', function () {
+test('the rule passes validation', function (): void {
     $form = new InRuleForm(
         val1: 'GB',
         val2: 100,
@@ -17,7 +19,7 @@ test('the rule passes validation', function () {
     expect($form->errors()->count())->toBe(0);
 });
 
-test('the rule fails validation', function () {
+test('the rule fails validation', function (): void {
     $form = new InRuleForm(
         val1: 'GB',
         val2: 500,
@@ -30,7 +32,7 @@ test('the rule fails validation', function () {
     expect(array_key_exists('In', $form->errors()->get('val2')))->toBeTrue();
 });
 
-test('a custom validation message can be set', function () {
+test('a custom validation message can be set', function (): void {
     $form = new InRuleForm(
         val1: 'GB',
         val2: 500,
@@ -42,8 +44,8 @@ test('a custom validation message can be set', function () {
     expect($form->errors()->first('val3'))->toBe('Please pick a value');
 });
 
-test('an exception is thrown if no values are provided to validate against', function () {
-    $form = new class(val1: 'GB') {
+test('an exception is thrown if no values are provided to validate against', function (): void {
+    $form = new class (val1: 'GB') {
         use Vanguard;
 
         public function __construct(

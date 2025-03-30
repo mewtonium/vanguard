@@ -1,8 +1,8 @@
 <?php
 
-namespace Mewtonium\Vanguard\Rules;
+declare(strict_types=1);
 
-use Mewtonium\Vanguard\Rules\Rule;
+namespace Mewtonium\Vanguard\Rules;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 final class MaxLength extends Rule

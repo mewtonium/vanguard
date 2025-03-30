@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 use Mewtonium\Vanguard\Tests\Fixtures\Forms\RequiredRuleForm;
 
-test('the rule passes validation', function () {
+test('the rule passes validation', function (): void {
     $form = new RequiredRuleForm(
         str1: 'Test',
         str2: 'Example',
@@ -13,7 +15,7 @@ test('the rule passes validation', function () {
     expect($form->errors()->count())->toBe(0);
 });
 
-test('the rule fails validation', function () {
+test('the rule fails validation', function (): void {
     $form = new RequiredRuleForm(
         str1: '',
         str2: 'Example',
@@ -25,7 +27,7 @@ test('the rule fails validation', function () {
     expect(array_key_exists('Required', $form->errors()->get('str1')))->toBeTrue();
 });
 
-test('a custom validation message can be set', function () {
+test('a custom validation message can be set', function (): void {
     $form = new RequiredRuleForm(
         str1: 'Test',
         str2: '',

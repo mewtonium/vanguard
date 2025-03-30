@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mewtonium\Vanguard\Rules;
 
-use Mewtonium\Vanguard\Rules\Rule;
 use Mewtonium\Vanguard\Contracts\ValidatesDates;
 use Mewtonium\Vanguard\Exceptions\RuleException;
 

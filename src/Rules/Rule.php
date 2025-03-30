@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mewtonium\Vanguard\Rules;
 
 abstract class Rule
@@ -24,14 +26,6 @@ abstract class Rule
     }
 
     /**
-     * Gets either a custom or default validation message.
-     */
-    public function getMessage(): string
-    {
-        return $this->message ?: $this->message();
-    }
-
-    /**
      * Determine if the provided value passes validation.
      */
     abstract public function passes(mixed $value): bool;
@@ -40,4 +34,12 @@ abstract class Rule
      * Define the validation error message.
      */
     abstract public function message(): string;
+
+    /**
+     * Gets either a custom or default validation message.
+     */
+    public function getMessage(): string
+    {
+        return $this->message ?: $this->message();
+    }
 }

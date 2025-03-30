@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mewtonium\Vanguard;
 
 use Mewtonium\Vanguard\Rules\Rule;
@@ -16,7 +18,7 @@ trait Vanguard
      */
     public function validate(): void
     {
-        $this->errors ??= new ErrorBag; 
+        $this->errors ??= new ErrorBag();
 
         $reflection = new \ReflectionClass($this);
 
