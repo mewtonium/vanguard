@@ -19,11 +19,15 @@ final class Equal extends Rule implements ValidatesDates
 
     public function passes(mixed $value): bool
     {
-        if (! is_null(to_date($value))) {
-            return $this->validateDate();
+        if (is_numeric($value)) {
+            return $value === $this->value;
         }
 
-        if (is_numeric($value) || is_string($value)) {
+        if (is_string($value)) {
+            if (! is_null(to_date($value))) {
+                return $this->validateDate();
+            }
+
             return $value === $this->value;
         }
 
