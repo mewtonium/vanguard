@@ -35,7 +35,7 @@ final class Between extends Rule implements ValidatesDates
     {
         return sprintf(
             'The %s field must be between %s and %s.',
-            $this->ruleField,
+            $this->field,
             $this->min,
             $this->max,
         );
@@ -47,7 +47,7 @@ final class Between extends Rule implements ValidatesDates
             throw new RuleException('Both `min` and `max` set on the [' . class_basename($this) . '] rule must be valid date strings.');
         }
 
-        if (is_null($ruleValue = to_date($this->ruleValue))) {
+        if (is_null($value = to_date($this->value))) {
             throw new RuleException('The value passed into the [' . class_basename($this) . '] rule to validate is not a valid date string.');
         }
 
@@ -55,6 +55,6 @@ final class Between extends Rule implements ValidatesDates
             throw new RuleException('Date range set on the [' . class_basename($this) . '] rule is invalid.');
         }
 
-        return $ruleValue >= $min && $ruleValue <= $max;
+        return $value >= $min && $value <= $max;
     }
 }

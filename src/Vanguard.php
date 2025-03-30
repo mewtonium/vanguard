@@ -38,8 +38,8 @@ trait Vanguard
                 /** @var Rule */
                 $rule = $attribute->newInstance();
 
-                $this->setRuleProperty($rule, 'ruleField', $property->getName());
-                $this->setRuleProperty($rule, 'ruleValue', $value);
+                $this->setRuleProperty($rule, 'field', $property->getName());
+                $this->setRuleProperty($rule, 'value', $value);
 
                 if (! $rule->passes($value)) {
                     $this->errors->add(

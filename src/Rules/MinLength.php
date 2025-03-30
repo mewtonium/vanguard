@@ -31,10 +31,10 @@ final class MinLength extends Rule
     {
         return sprintf(
             'The %s field must be a minimum of %s %s %s.',
-            $this->ruleField,
+            $this->field,
             $this->length,
-            is_array($this->ruleValue) ? 'items' : 'characters',
-            is_array($this->ruleValue) ? 'in size' : 'long',
+            is_array($this->value) ? 'items' : 'characters',
+            is_array($this->value) ? 'in size' : 'long',
         );
     }
 }

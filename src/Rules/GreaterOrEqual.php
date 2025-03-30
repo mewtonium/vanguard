@@ -11,7 +11,7 @@ use Mewtonium\Vanguard\Exceptions\RuleException;
 final class GreaterOrEqual extends Rule implements ValidatesDates
 {
     public function __construct(
-        protected float|int|string $value,
+        protected float|int|string $min,
         ?string $message = null,
     ) {
         parent::__construct($message);
@@ -20,7 +20,7 @@ final class GreaterOrEqual extends Rule implements ValidatesDates
     public function passes(mixed $value): bool
     {
         if (is_numeric($value)) {
-            return $value >= $this->value;
+            return $value >= $this->min;
         }
 
         if (is_string($value) || $value instanceof \DateTimeInterface) {
@@ -34,21 +34,21 @@ final class GreaterOrEqual extends Rule implements ValidatesDates
     {
         return sprintf(
             'The %s field must be greater than or equal to %s.',
-            $this->ruleField,
-            $this->value,
+            $this->field,
+            $this->min,
         );
     }
 
     public function validateDate(): bool
     {
-        if (is_null($value = to_date($this->value))) {
+        if (is_null($min = to_date($this->min))) {
             throw new RuleException('The value set on the [' . class_basename($this) . '] rule must be a valid date string.');
         }
 
-        if (is_null($ruleValue = to_date($this->ruleValue))) {
+        if (is_null($value = to_date($this->value))) {
             throw new RuleException('The value passed into the [' . class_basename($this) . '] rule to validate is not a valid date string.');
         }
 
-        return $ruleValue >= $value;
+        return $value >= $min;
     }
 }

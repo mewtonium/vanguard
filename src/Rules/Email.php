@@ -19,6 +19,6 @@ final class Email extends Rule
 
     public function message(): string
     {
-        return "The {$this->ruleField} field must be a valid email.";
+        return "The {$this->field} field must be a valid email.";
     }
 }

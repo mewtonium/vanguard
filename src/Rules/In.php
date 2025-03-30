@@ -29,7 +29,7 @@ final class In extends Rule
     {
         return sprintf(
             'The %s field does not have a valid selection.',
-            $this->ruleField,
+            $this->field,
         );
     }
 }

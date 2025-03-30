@@ -9,12 +9,12 @@ abstract class Rule
     /**
      * The field under validation by this rule.
      */
-    protected string $ruleField;
+    protected string $field;
 
     /**
      * The value under validation by this rule.
      */
-    protected mixed $ruleValue;
+    protected mixed $value;
 
     /**
      * Create a new instance of this rule.
