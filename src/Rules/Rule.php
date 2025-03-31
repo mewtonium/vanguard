@@ -28,7 +28,7 @@ abstract class Rule
     /**
      * Determine if the provided value passes validation.
      */
-    abstract public function passes(mixed $value): bool;
+    abstract public function passes(): bool;
 
     /**
      * Define the validation error message.

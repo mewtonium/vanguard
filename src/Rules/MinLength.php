@@ -14,14 +14,14 @@ final class MinLength extends Rule
         parent::__construct($message);
     }
 
-    public function passes(mixed $value): bool
+    public function passes(): bool
     {
-        if (is_string($value)) {
-            return mb_strlen($value) >= $this->length;
+        if (is_string($this->value)) {
+            return mb_strlen($this->value) >= $this->length;
         }
 
-        if (is_array($value)) {
-            return count($value) >= $this->length;
+        if (is_array($this->value)) {
+            return count($this->value) >= $this->length;
         }
 
         return false;

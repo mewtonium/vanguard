@@ -12,9 +12,9 @@ final class Email extends Rule
         parent::__construct($message);
     }
 
-    public function passes(mixed $value): bool
+    public function passes(): bool
     {
-        return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
+        return filter_var($this->value, FILTER_VALIDATE_EMAIL) !== false;
     }
 
     public function message(): string

@@ -12,17 +12,17 @@ final class Required extends Rule
         parent::__construct($message);
     }
 
-    public function passes(mixed $value): bool
+    public function passes(): bool
     {
-        if (is_string($value)) {
-            return trim($value) !== '';
+        if (is_string($this->value)) {
+            return trim($this->value) !== '';
         }
 
-        if (is_array($value)) {
-            return count($value) > 0;
+        if (is_array($this->value)) {
+            return count($this->value) > 0;
         }
 
-        return $value !== null;
+        return $this->value !== null;
     }
 
     public function message(): string

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Mewtonium\Vanguard;
 
+use Mewtonium\Vanguard\Contracts\ValidatesDates;
 use Mewtonium\Vanguard\Rules\Rule;
 
 trait Vanguard
@@ -39,7 +40,13 @@ trait Vanguard
                 $rule = $attribute->newInstance();
 
                 $this->setRuleProperty($rule, 'field', $property->getName());
-                $this->setRuleProperty($rule, 'value', $value);
+
+                if ($rule instanceof ValidatesDates) {
+                    $this->setDateRuleProperties($rule);
+                    $this->setRuleProperty($rule, 'value', is_string($value) ? (to_date($value) ?: $value) : $value);
+                } else {
+                    $this->setRuleProperty($rule, 'value', $value);
+                }
 
                 if (! $rule->passes($value)) {
                     $this->errors->add(
@@ -78,5 +85,28 @@ trait Vanguard
         $property = $reflection->getProperty($name);
         $property->setAccessible(true);
         $property->setValue($rule, $value);
+    }
+
+    /**
+     * Sets a date property on the `Rule` instance using Reflection.
+     */
+    private function setDateRuleProperties(Rule &$rule): void
+    {
+        $reflection = new \ReflectionObject($rule);
+
+        $parentProperties = array_map(
+            array: (new \ReflectionClass(Rule::class))->getProperties(),
+            callback: fn (\ReflectionProperty $property) => $property->getName(),
+        );
+
+        foreach ($reflection->getProperties() as $property) {
+            if (in_array($property->getName(), $parentProperties)) {
+                continue;
+            }
+
+            if (is_string($value = $property->getValue($rule)) && ! is_null($date = to_date($value))) {
+                $this->setRuleProperty($rule, $property->getName(), $date);
+            }
+        }
     }
 }

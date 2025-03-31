@@ -11,24 +11,24 @@ use Mewtonium\Vanguard\Exceptions\RuleException;
 final class Between extends Rule implements ValidatesDates
 {
     public function __construct(
-        protected int|float|string $min,
-        protected int|float|string $max,
+        protected int|float|string|\DateTimeInterface $min,
+        protected int|float|string|\DateTimeInterface $max,
         ?string $message = null,
     ) {
         parent::__construct($message);
     }
 
-    public function passes(mixed $value): bool
+    public function passes(): bool
     {
-        if (is_numeric($value) && is_numeric($this->min) && is_numeric($this->max)) {
-            return $value >= $this->min && $value <= $this->max;
+        if (
+            $this->min instanceof \DateTimeInterface
+            && $this->max instanceof \DateTimeInterface
+            && ($this->min > $this->max || $this->max < $this->min)
+        ) {
+            throw new RuleException('Date range set on the [' . class_basename($this) . '] rule is invalid.');
         }
 
-        if (is_string($value) || $value instanceof \DateTimeInterface) {
-            return $this->validateDate();
-        }
-
-        return false;
+        return $this->value >= $this->min && $this->value <= $this->max;
     }
 
     public function message(): string
@@ -36,25 +36,8 @@ final class Between extends Rule implements ValidatesDates
         return sprintf(
             'The %s field must be between %s and %s.',
             $this->field,
-            $this->min,
-            $this->max,
+            $this->min instanceof \DateTimeInterface ? $this->min->format('Y-m-d H:i:s') : $this->min,
+            $this->max instanceof \DateTimeInterface ? $this->max->format('Y-m-d H:i:s') : $this->max,
         );
-    }
-
-    public function validateDate(): bool
-    {
-        if (is_null($min = to_date($this->min)) || is_null($max = to_date($this->max))) {
-            throw new RuleException('Both `min` and `max` set on the [' . class_basename($this) . '] rule must be valid date strings.');
-        }
-
-        if (is_null($value = to_date($this->value))) {
-            throw new RuleException('The value passed into the [' . class_basename($this) . '] rule to validate is not a valid date string.');
-        }
-
-        if ($min > $max || $max < $min) {
-            throw new RuleException('Date range set on the [' . class_basename($this) . '] rule is invalid.');
-        }
-
-        return $value >= $min && $value <= $max;
     }
 }

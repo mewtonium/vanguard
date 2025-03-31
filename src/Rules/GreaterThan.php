@@ -5,29 +5,20 @@ declare(strict_types=1);
 namespace Mewtonium\Vanguard\Rules;
 
 use Mewtonium\Vanguard\Contracts\ValidatesDates;
-use Mewtonium\Vanguard\Exceptions\RuleException;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 final class GreaterThan extends Rule implements ValidatesDates
 {
     public function __construct(
-        protected float|int|string $min,
+        protected float|int|string|\DateTimeInterface $min,
         ?string $message = null,
     ) {
         parent::__construct($message);
     }
 
-    public function passes(mixed $value): bool
+    public function passes(): bool
     {
-        if (is_numeric($value)) {
-            return $value > $this->min;
-        }
-
-        if (is_string($value) || $value instanceof \DateTimeInterface) {
-            return $this->validateDate();
-        }
-
-        return false;
+        return $this->value > $this->min;
     }
 
     public function message(): string
@@ -35,20 +26,7 @@ final class GreaterThan extends Rule implements ValidatesDates
         return sprintf(
             'The %s field must be greater than %s.',
             $this->field,
-            $this->min,
+            $this->min instanceof \DateTimeInterface ? $this->min->format('Y-m-d H:i:s') : $this->min,
         );
-    }
-
-    public function validateDate(): bool
-    {
-        if (is_null($min = to_date($this->min))) {
-            throw new RuleException('The value set on the [' . class_basename($this) . '] rule must be a valid date string.');
-        }
-
-        if (is_null($value = to_date($this->value))) {
-            throw new RuleException('The value passed into the [' . class_basename($this) . '] rule to validate is not a valid date string.');
-        }
-
-        return $value > $min;
     }
 }

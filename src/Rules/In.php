@@ -14,15 +14,15 @@ final class In extends Rule
         ?string $message = null,
     ) {
         parent::__construct($message);
-
-        if (count($values) === 0) {
-            throw new RuleException('The [' . class_basename($this) . '] rule must have at least one value to check against.');
-        }
     }
 
-    public function passes(mixed $value): bool
+    public function passes(): bool
     {
-        return in_array($value, $this->values);
+        if (count($this->values) === 0) {
+            throw new RuleException('The [' . class_basename($this) . '] rule must have at least one value to check against.');
+        }
+
+        return in_array($this->value, $this->values);
     }
 
     public function message(): string

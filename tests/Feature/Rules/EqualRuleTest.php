@@ -35,7 +35,7 @@ test('the rule fails validation', function (): void {
     expect($form->errors()->first('str1'))->toBe("The str1 field must be equal to 'test'.");
     expect(array_key_exists('Equal', $form->errors()->get('str1')))->toBeTrue();
 
-    expect($form->errors()->first('date'))->toBe("The date field must be equal to '2025-01-01'.");
+    expect($form->errors()->first('date'))->toBe("The date field must be equal to 2025-01-01 00:00:00.");
     expect(array_key_exists('Equal', $form->errors()->get('date')))->toBeTrue();
 });
 
