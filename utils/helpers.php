@@ -22,8 +22,10 @@ if (! function_exists('to_date')) {
      * - `Y-m-d`
      * - `Y-m-d H:i`
      * - `Y-m-d H:i:s`
+     *
+     * @throws \DateException
      */
-    function to_date(string $datetime, bool $immutable = true): ?\DateTimeInterface
+    function to_date(string $datetime, bool $immutable = true, bool $throw = false): ?\DateTimeInterface
     {
         $formats = [
             'Y-m-d',
@@ -43,6 +45,10 @@ if (! function_exists('to_date')) {
                     'Y-m-d H:i:s' => $date,
                 };
             }
+        }
+
+        if ($throw) {
+            throw new \DateException("An invalid datetime string was provided: '{$datetime}'");
         }
 
         return null;

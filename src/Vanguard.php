@@ -43,7 +43,7 @@ trait Vanguard
 
                 if ($rule instanceof ValidatesDates) {
                     $this->setDateRuleProperties($rule);
-                    $this->setRuleProperty($rule, 'value', is_string($value) ? (to_date($value) ?: $value) : $value);
+                    $this->setRuleProperty($rule, 'value', is_string($value) ? to_date($value, throw: true) : $value);
                 } else {
                     $this->setRuleProperty($rule, 'value', $value);
                 }
@@ -104,7 +104,9 @@ trait Vanguard
                 continue;
             }
 
-            if (is_string($value = $property->getValue($rule)) && ! is_null($date = to_date($value))) {
+            if (is_string($value = $property->getValue($rule))) {
+                $date = to_date($value, throw: true);
+
                 $this->setRuleProperty($rule, $property->getName(), $date);
             }
         }
