@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Mewtonium\Vanguard;
 
 use Mewtonium\Vanguard\Contracts\ValidatesDates;
+use Mewtonium\Vanguard\Contracts\ValidatesDatesOrNormalStrings;
 use Mewtonium\Vanguard\Rules\Rule;
 
 trait Vanguard
@@ -41,12 +42,19 @@ trait Vanguard
 
                 $this->setRuleProperty($rule, 'field', $property->getName());
 
-                if ($rule instanceof ValidatesDates) {
+                if ($rule instanceof ValidatesDates || $rule instanceof ValidatesDatesOrNormalStrings) {
                     $this->setDateRuleProperties($rule);
-                    $this->setRuleProperty($rule, 'value', is_string($value) ? to_date($value, throw: true) : $value);
-                } else {
-                    $this->setRuleProperty($rule, 'value', $value);
                 }
+
+                $this->setRuleProperty(
+                    $rule,
+                    name: 'value',
+                    value: match (true) {
+                        $rule instanceof ValidatesDates => is_string($value) ? to_date($value, throw: true) : $value,
+                        $rule instanceof ValidatesDatesOrNormalStrings => is_string($value) ? (to_date($value) ?? $value) : $value,
+                        default => $value,
+                    },
+                );
 
                 if (! $rule->passes($value)) {
                     $this->errors->add(
@@ -105,9 +113,14 @@ trait Vanguard
             }
 
             if (is_string($value = $property->getValue($rule))) {
-                $date = to_date($value, throw: true);
+                $date = to_date(
+                    $value,
+                    throw: $rule instanceof ValidatesDates,
+                );
 
-                $this->setRuleProperty($rule, $property->getName(), $date);
+                if (! is_null($date)) {
+                    $this->setRuleProperty($rule, $property->getName(), $date);
+                }
             }
         }
     }

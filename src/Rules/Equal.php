@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Mewtonium\Vanguard\Rules;
 
-use Mewtonium\Vanguard\Contracts\ValidatesDates;
+use Mewtonium\Vanguard\Contracts\ValidatesDatesOrNormalStrings;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class Equal extends Rule implements ValidatesDates
+final class Equal extends Rule implements ValidatesDatesOrNormalStrings
 {
     public function __construct(
         protected float|int|string|\DateTimeInterface $to,
