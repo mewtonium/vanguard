@@ -16,6 +16,10 @@ final class RequiredRuleForm
         protected string $str1,
         #[Required(message: 'Please provide str2.')]
         protected string $str2,
+        #[Required]
+        protected array $data,
+        #[Required]
+        protected mixed $val,
     ) {
         //
     }

@@ -22,6 +22,8 @@ final class MaxLengthRuleForm
         protected array $val4,
         #[MaxLength(5, message: 'The length is too long')]
         protected string $val5,
+        #[MaxLength(5)]
+        protected mixed $val6,
     ) {
         //
     }

@@ -14,7 +14,7 @@ test('the rule passes validation', function (): void {
 
     $form->validate();
 
-    expect($form->errors()->count())->toBe(0);
+    expect($form->invalid())->toBeFalse();
 });
 
 test('the rule fails validation', function (): void {

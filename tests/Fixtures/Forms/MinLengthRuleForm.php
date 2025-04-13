@@ -22,6 +22,8 @@ final class MinLengthRuleForm
         protected array $val4,
         #[MinLength(5, message: 'The length is too short')]
         protected string $val5,
+        #[MinLength(5)]
+        protected mixed $val6,
     ) {
         //
     }

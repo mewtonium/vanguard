@@ -8,17 +8,21 @@ test('the rule passes validation', function (): void {
     $form = new RequiredRuleForm(
         str1: 'Test',
         str2: 'Example',
+        data: ['testing' => true],
+        val: 'Testing',
     );
 
     $form->validate();
 
-    expect($form->errors()->count())->toBe(0);
+    expect($form->invalid())->toBeFalse();
 });
 
 test('the rule fails validation', function (): void {
     $form = new RequiredRuleForm(
         str1: '',
         str2: 'Example',
+        data: [],
+        val: null,
     );
 
     $form->validate();
@@ -31,6 +35,8 @@ test('a custom validation message can be set', function (): void {
     $form = new RequiredRuleForm(
         str1: 'Test',
         str2: '',
+        data: ['testing' => true],
+        val: 'Testing',
     );
 
     $form->validate();

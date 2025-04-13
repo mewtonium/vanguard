@@ -11,11 +11,12 @@ test('the rule passes validation', function (): void {
         val3: 'test',
         val4: [6, 7, 8, 9, 10],
         val5: 'test',
+        val6: 'test'
     );
 
     $form->validate();
 
-    expect($form->errors()->count())->toBe(0);
+    expect($form->invalid())->toBeFalse();
 });
 
 test('the rule fails validation', function (): void {
@@ -25,6 +26,7 @@ test('the rule fails validation', function (): void {
         val3: 'example',
         val4: [6, 7, 8, 9, 10, 11, 12],
         val5: 'test',
+        val6: new \stdClass(),
     );
 
     $form->validate();
@@ -43,6 +45,7 @@ test('a custom validation message can be set', function (): void {
         val3: 'test',
         val4: [6, 7, 8, 9, 10],
         val5: 'example',
+        val6: 'test',
     );
 
     $form->validate();
