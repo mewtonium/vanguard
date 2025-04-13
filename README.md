@@ -7,19 +7,23 @@ Vanguard is a simple, attribute-based validation library for PHP, providing a cl
 
 ## Features
 
-- Simple attribute-based validation.
-- Support for common validation rules with more to be added in future. Available rules so far:
-  - `Between(from<int|float>, to<int|float>)` - Boundaries are included by default; disable with `inclusive: false` - e.g. `Between(10, 100, inclusive: false)`
-  - `Email`
-  - `Equal(int|float|string)` - Checks equality for string length or numeric value
-  - `GreaterOrEqual(int|float)`
-  - `GreaterThan(int|float)`
-  - `In(array)`
-  - `LessOrEqual(int|float)`
-  - `LessThan(int|float)`
-  - `Max(int)` - Checks max length of a string or array
-  - `Min(int)` - Checks min length of a string or array
-  - `Required`
+- Simple attribute-based validation.  
+- Support for common validation rules, with more to be added in the future.  
+  - **Comparison and range-based rules** (`Between`, `GreaterOrEqual`, `GreaterThan`, `LessOrEqual`, `LessThan`) also validate strings as dates when applicable.  
+  - `Equal` can check strings as either a date string or a standard value. 
+
+Available rules so far:  
+  - `Between(min<int|float|string|DateTimeInterface>, max<int|float|string|DateTimeInterface>)` - Upper and lower bounds inclusive.  
+  - `Email`  
+  - `Equal(value<int|float|string|DateTimeInterface>)`  
+  - `GreaterOrEqual(value<int|float|string|DateTimeInterface>)`  
+  - `GreaterThan(value<int|float|string|DateTimeInterface>)`  
+  - `In(values<array>)`  
+  - `LessOrEqual(value<int|float|string|DateTimeInterface>)`  
+  - `LessThan(value<int|float|string|DateTimeInterface>)`  
+  - `MaxLength(value<int>)` - Checks max length of a string or array.  
+  - `MinLength(value<int>)` - Checks min length of a string or array.  
+  - `Required` 
 
 ## Installation
 
@@ -37,8 +41,8 @@ Add the `Vanguard` trait to any class, add a few `Rule` attributes to properties
 <?php
 
 use Mewtonium\Vanguard\Rules\In;
-use Mewtonium\Vanguard\Rules\Max;
-use Mewtonium\Vanguard\Rules\Min;
+use Mewtonium\Vanguard\Rules\MaxLength;
+use Mewtonium\Vanguard\Rules\MinLength;
 use Mewtonium\Vanguard\Rules\Email;
 use Mewtonium\Vanguard\Rules\Between;
 use Mewtonium\Vanguard\Rules\Required;
@@ -49,10 +53,10 @@ class AccountSignupForm
     use Vanguard;
 
     public function __construct(
-        #[Required, Min(2), Max(255)]
+        #[Required, MinLength(2), MaxLength(255)]
         protected string $firstName,
         
-        #[Required(message: 'Please provide your last name.'), Min(2), Max(255)]
+        #[Required(message: 'Please provide your last name.'), MinLength(2), MaxLength(255)]
         protected string $lastName,
 
         #[Required, Between(18, 99)]
@@ -63,6 +67,9 @@ class AccountSignupForm
 
         #[Required, In(['GB', 'FR', 'DE', 'ES', 'IT', 'IE', 'JP', 'ZH'])]
         protected string $country,
+
+        #[Required, GreaterOrEqual('2025-01-01')]
+        protected string $date;
     ) {
         //
     }
@@ -74,6 +81,7 @@ $data = [
     'age' => 17,
     'email' => 'joe.bloggs',
     'country' => 'CH',
+    'date' => '2024-01-01',
 ];
 
 $form = new AccountSignupForm(...$data);
@@ -98,7 +106,7 @@ if ($form->invalid()) {
      * [
      *     'lastName' => [
      *         'Required' => 'Please provide your first name.',
-     *         'Min' => 'The lastName field must be a minimum of 2 characters long.',
+     *         'MinLength' => 'The lastName field must be a minimum of 2 characters long.',
      *     ],
      *     'age' => [
      *         'Between' => 'The age field must be between 18 and 99.',
@@ -108,10 +116,15 @@ if ($form->invalid()) {
      *     ],
      *     'country' => [
      *         'In' => 'The country field does not have a valid selection.',
+     *     ],
+     *     'date' => [
+     *         'GreaterOrEqual' => 'The date field must be greater than or equal to 2025-01-01.',
      *     ]
      * ]
      */
 }
 ```
 
+## Changelog
 
+See the full changelog [here](CHANGELOG.md).
