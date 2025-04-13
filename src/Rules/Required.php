@@ -15,7 +15,7 @@ final class Required extends Rule
     public function passes(): bool
     {
         if (is_string($this->value)) {
-            return trim($this->value) !== '';
+            return mb_trim($this->value) !== '';
         }
 
         if (is_array($this->value)) {

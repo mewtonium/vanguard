@@ -17,7 +17,7 @@ if (! function_exists('class_basename')) {
 if (! function_exists('to_date')) {
     /**
      * Creates a `DateTime` instance from the given date string.
-     * 
+     *
      * Only the following formats are accepted:
      * - `Y-m-d`
      * - `Y-m-d H:i`
