@@ -15,4 +15,9 @@
             <directory suffix=".php">./src</directory>
         </include>
     </source>
+    <coverage>
+        <report>
+            <html outputDirectory="tests/Coverage/html"/>
+        </report>
+    </coverage>
 </phpunit>
