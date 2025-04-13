@@ -16,8 +16,13 @@ test('the `class_basename` helper works correctly', function (): void {
 
 test('the `to_date` helper works correctly', function (): void {
     expect(to_date('2025-01-01'))->toBeInstanceOf(\DateTimeInterface::class);
+    expect(to_date('2025-01-01 00:00'))->toBeInstanceOf(\DateTimeInterface::class);
+    expect(to_date('2025-01-01 00:00:00'))->toBeInstanceOf(\DateTimeInterface::class);
+
     expect(to_date('2025-01-01', immutable: true))->toBeInstanceOf(\DateTimeImmutable::class);
     expect(to_date('2025-01-01', immutable: false))->toBeInstanceOf(\DateTime::class);
 
     expect(to_date('not-valid'))->toBeNull();
+    expect(to_date('today'))->toBeNull();
+    expect(to_date('2025-01-01T00:00:00+0000'))->toBeNull();
 });

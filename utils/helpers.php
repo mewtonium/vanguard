@@ -17,17 +17,34 @@ if (! function_exists('class_basename')) {
 if (! function_exists('to_date')) {
     /**
      * Creates a `DateTime` instance from the given date string.
+     * 
+     * Only the following formats are accepted:
+     * - `Y-m-d`
+     * - `Y-m-d H:i`
+     * - `Y-m-d H:i:s`
      */
     function to_date(string $datetime, bool $immutable = true): ?\DateTimeInterface
     {
-        try {
+        $formats = [
+            'Y-m-d',
+            'Y-m-d H:i',
+            'Y-m-d H:i:s',
+        ];
+
+        foreach ($formats as $format) {
             $date = $immutable
-                ? new \DateTimeImmutable($datetime)
-                : new \DateTime($datetime);
-        } catch (\DateException $e) {
-            return null;
+                ? DateTimeImmutable::createFromFormat($format, $datetime)
+                : DateTime::createFromFormat($format, $datetime);
+
+            if ($date !== false) {
+                return match ($format) {
+                    'Y-m-d' => $date->setTime(hour: 0, minute: 0, second: 0),
+                    'Y-m-d H:i' => $date->setTime(hour: (int) $date->format('H'), minute: (int) $date->format('i'), second: 0),
+                    'Y-m-d H:i:s' => $date,
+                };
+            }
         }
 
-        return $date;
+        return null;
     }
 }
