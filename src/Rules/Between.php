@@ -20,12 +20,12 @@ final class Between extends Rule implements ValidatesDates
 
     public function passes(): bool
     {
-        if (
-            $this->min instanceof \DateTimeInterface
-            && $this->max instanceof \DateTimeInterface
-            && ($this->min > $this->max || $this->max < $this->min)
-        ) {
-            throw new RuleException('Date range set on the [' . class_basename($this) . '] rule is invalid.');
+        if ($this->min > $this->max || $this->max < $this->min) {
+            if ($this->min instanceof \DateTimeInterface && $this->max instanceof \DateTimeInterface) {
+                throw new RuleException('Date range set on the [' . class_basename($this) . '] rule is invalid.');
+            }
+
+            throw new RuleException('Number range set on the [' . class_basename($this) . '] rule is invalid.');
         }
 
         return $this->value >= $this->min && $this->value <= $this->max;

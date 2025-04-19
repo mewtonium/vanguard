@@ -52,7 +52,7 @@ test('an exception is thrown if the min date is greater than the max date or vic
         use Vanguard;
 
         public function __construct(
-            #[Between('2030-01-01', '2026-01-01')]
+            #[Between(min: '2030-01-01', max: '2026-01-01')]
             protected string $date,
         ) {
             //
@@ -63,5 +63,24 @@ test('an exception is thrown if the min date is greater than the max date or vic
         ->toThrow(
             RuleException::class,
             'Date range set on the [Between] rule is invalid.',
+        );
+});
+
+test('an exception is thrown if the min value is greater than the max value or vice versa', function (): void {
+    $form = new class (number: 50) {
+        use Vanguard;
+
+        public function __construct(
+            #[Between(min: 100, max: 1)]
+            protected int $number,
+        ) {
+            //
+        }
+    };
+
+    expect(fn () => $form->validate())
+        ->toThrow(
+            RuleException::class,
+            'Number range set on the [Between] rule is invalid.',
         );
 });
