@@ -8,26 +8,13 @@ Vanguard is a simple, attribute-based validation library for PHP, providing a cl
 ## Features
 
 - Simple attribute-based validation.  
-- Support for common validation rules, with more to be added in the future.  
+- Dependency-free - no external libraries required.  
+- Supports common validation rules, with more to be added in future.  
   - **Comparison and range-based rules** (`Between`, `GreaterOrEqual`, `GreaterThan`, `LessOrEqual`, `LessThan`) also validate strings as dates when applicable.  
-  - `Equal` can check strings as either a date string or a standard value. 
-
-Available rules so far:  
-  - `Between(min<int|float|string|DateTimeInterface>, max<int|float|string|DateTimeInterface>)` - Upper and lower bounds inclusive.  
-  - `Email`  
-  - `Equal(value<int|float|string|DateTimeInterface>)`  
-  - `GreaterOrEqual(value<int|float|string|DateTimeInterface>)`  
-  - `GreaterThan(value<int|float|string|DateTimeInterface>)`  
-  - `In(values<array>)`  
-  - `LessOrEqual(value<int|float|string|DateTimeInterface>)`  
-  - `LessThan(value<int|float|string|DateTimeInterface>)`  
-  - `MaxLength(value<int>)` - Checks max length of a string or array.  
-  - `MinLength(value<int>)` - Checks min length of a string or array.  
-  - `Required` 
+  - `Equal` can check strings as either a date string, or a standard value.  
+- Supports for a custom error message on any rule.
 
 ## Installation
-
-> **Note:** This package is not yet published on Packagist, so the command below will not work.
 
 ```bash
 composer require mewtonium/vanguard
@@ -86,45 +73,240 @@ $data = [
 
 $form = new AccountSignupForm(...$data);
 $form->validate();
+```
 
+## Validation Rules
+
+> **Note:** Vanguard performs <u>validation only</u>. It does not sanitise or modify your input data in any way — ensure you handle sanitisation separately, if needed.
+
+Here are all the currently supported validation rules:
+
+### `Required`
+
+Validate that the value is not null, an empty string, or an empty array.
+
+```php
+use Mewtonium\Vanguard\Rules\Required;
+
+#[Required]
+public string $name;
+```
+
+---
+
+### `Email`
+
+Validates that the value is a valid email address using `filter_var`.
+
+```php
+use Mewtonium\Vanguard\Rules\Email;
+
+#[Email]
+public string $email;
+```
+
+---
+
+### `In`
+
+Validate that the value exists within a predefined list of values.
+
+```php
+use Mewtonium\Vanguard\Rules\In;
+
+#[In(['GB', 'FR', 'DE'])]
+public string $country;
+```
+
+---
+
+### `Equal`
+
+Validates if the value is equal to the given value. If both are strings and resemble date strings, it compares them as dates.
+
+```php
+use Mewtonium\Vanguard\Rules\Equal;
+
+#[Equal(30)]
+public int $age;
+
+#[Equal('2025-01-01')]
+public string $date;
+```
+
+---
+
+### `Between`
+
+Validates whether the value lies within the inclusive range of `min` and `max`.
+
+```php
+use Mewtonium\Vanguard\Rules\Between;
+
+#[Between(1, 100)]
+public int $numbers;
+
+#[Between('2020-01-01', '2030-01-01')] 
+public string $date;
+```
+
+---
+
+### `GreaterThan`
+
+Validates if the value is strictly greater than the given value.
+
+```php
+use Mewtonium\Vanguard\Rules\GreaterThan;
+
+#[GreaterThan(30)]
+public int $age;
+
+#[GreaterThan('2025-01-01')] 
+public string $date;
+```
+
+---
+
+### `GreaterOrEqual`
+
+Validates if the value is greater than or equal to the given value.
+
+```php
+use Mewtonium\Vanguard\Rules\GreaterOrEqual;
+
+#[GreaterOrEqual(30)]
+public int $age;
+
+#[GreaterOrEqual('2025-01-01')] 
+public string $date;
+```
+
+---
+
+### `LessThan`
+
+Validates if the value is strictly less than the given value.
+
+```php
+use Mewtonium\Vanguard\Rules\LessThan;
+
+#[LessThan(30)]
+public int $age;
+
+#[LessThan('2030-01-01')] 
+public string $date;
+```
+
+---
+
+### `LessOrEqual`
+
+Checks if the value is less than or equal to the given value.
+
+```php
+use Mewtonium\Vanguard\Rules\LessOrEqual;
+
+#[LessOrEqual(30)]
+public int $age;
+
+#[LessOrEqual('2030-01-01')] 
+public string $date;
+```
+
+---
+
+### `MinLength`
+
+Validates that a string or array has at least the given number of characters or items.
+
+```php
+use Mewtonium\Vanguard\Rules\MinLength;
+
+#[MinLength(3)]
+public string $name;
+
+#[MinLength(3)]
+public array $data;
+```
+
+---
+
+### `MaxLength`
+
+Validates that a string or array has no more than the given number of characters or items.
+
+```php
+use Mewtonium\Vanguard\Rules\MaxLength;
+
+#[MaxLength(255)]
+public string $url;
+
+#[MaxLength(10)]
+public array $data;
+```
+
+## Custom Validation Message
+
+All validation rules support a custom error message. You can specify a custom message by passing the `message` argument:
+
+```php
+#[Required(message: 'Please enter your first name.')]
+#[MinLength(2, message: 'Your last name must be at least 2 characters long.')]
+```
+
+## Handling Validation Errors
+
+When validation fails, errors are stored in an `ErrorBag` instance:
+
+```php
 if ($form->invalid()) {
     $errors = $form->errors(); // Returns an instance of `ErrorBag`
 
-    /**
-     * ErrorBag methods:
-     * 
-     * $errors->all() // returns an list of all errors
-     * $errors->get($field) // fetches errors by field
-     * $errors->first($field) // finds the first error by field
-     * $errors->add($field, $file, $message) // adds an error to the bag
-     * $errors->has($field) // checks if an error exists in the bag by field
-     * $errors->count() // returns count of all errors
-     * $errors->flush() // removes all errors from the bag
-     *
-     * Calling $errors->all() for the above data will return:
-     * 
-     * [
-     *     'lastName' => [
-     *         'Required' => 'Please provide your first name.',
-     *         'MinLength' => 'The lastName field must be a minimum of 2 characters long.',
-     *     ],
-     *     'age' => [
-     *         'Between' => 'The age field must be between 18 and 99.',
-     *     ],
-     *     'email' => [
-     *         'Email' => 'The email field must be a valid email.',
-     *     ],
-     *     'country' => [
-     *         'In' => 'The country field does not have a valid selection.',
-     *     ],
-     *     'date' => [
-     *         'GreaterOrEqual' => 'The date field must be greater than or equal to 2025-01-01.',
-     *     ]
-     * ]
-     */
+    // ...
 }
+```
+
+Available methods:
+
+```php
+$errors->all();         // Returns all validation errors
+$errors->get($field);   // Returns all errors for a specific field
+$errors->first($field); // Returns the first error for a specific field
+$errors->has($field);   // Checks if a field has any errors
+$errors->count();       // Total number of validation errors
+$errors->flush();       // Clears the bag
+```
+
+### Example Output
+
+For the example in the "Usage" section, calling `$errors->all()` would return:
+
+```php
+[
+    'lastName' => [
+        'Required' => 'Please provide your last name.',
+        'MinLength' => 'The lastName field must be a minimum of 2 characters long.',
+    ],
+    'age' => [
+        'Between' => 'The age field must be between 18 and 99.',
+    ],
+    'email' => [
+        'Email' => 'The email field must be a valid email.',
+    ],
+    'country' => [
+        'In' => 'The country field does not have a valid selection.',
+    ],
+    'date' => [
+        'GreaterOrEqual' => 'The date field must be greater than or equal to 2025-01-01.',
+    ]
+]
 ```
 
 ## Changelog
 
 See the full changelog [here](CHANGELOG.md).
+
+## License
+
+This project is open-source and available under the [MIT license](LICENSE).
