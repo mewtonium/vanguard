@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.0.0] - 2025-06-26
+### Fixed
+- Fixed incorrect `passes()` method call in main validation rule handler
+
 ## [v1.0.0] - 2025-04-19
 ### Added
 #### Initial release! 🚀  
