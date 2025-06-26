@@ -56,7 +56,7 @@ trait Vanguard
                     },
                 );
 
-                if (! $rule->passes($value)) {
+                if (! $rule->passes()) {
                     $this->errors->add(
                         field: $property->getName(),
                         rule: class_basename($rule),
