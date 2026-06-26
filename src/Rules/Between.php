@@ -4,23 +4,33 @@ declare(strict_types=1);
 
 namespace Mewtonium\Vanguard\Rules;
 
-use Mewtonium\Vanguard\Contracts\ValidatesDates;
+use Mewtonium\Vanguard\Concerns\PreparesDate;
+use Mewtonium\Vanguard\Contracts\PreparesValue;
 use Mewtonium\Vanguard\Exceptions\RuleException;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class Between extends Rule implements ValidatesDates
+final class Between extends BaseRule implements PreparesValue
 {
+    use PreparesDate;
+
+    protected int|float|string|\DateTimeInterface $min;
+
+    protected int|float|string|\DateTimeInterface $max;
+
     public function __construct(
-        protected int|float|string|\DateTimeInterface $min,
-        protected int|float|string|\DateTimeInterface $max,
+        int|float|string|\DateTimeInterface $min,
+        int|float|string|\DateTimeInterface $max,
         ?string $message = null,
     ) {
+        $this->min = $this->prepare($min);
+        $this->max = $this->prepare($max);
+
         parent::__construct($message);
     }
 
     public function passes(): bool
     {
-        if ($this->min > $this->max || $this->max < $this->min) {
+        if ($this->min > $this->max) {
             if ($this->min instanceof \DateTimeInterface && $this->max instanceof \DateTimeInterface) {
                 throw new RuleException('Date range set on the [' . class_basename($this) . '] rule is invalid.');
             }
@@ -36,8 +46,8 @@ final class Between extends Rule implements ValidatesDates
         return sprintf(
             'The %s field must be between %s and %s.',
             $this->field,
-            $this->min instanceof \DateTimeInterface ? $this->min->format('Y-m-d H:i:s') : $this->min,
-            $this->max instanceof \DateTimeInterface ? $this->max->format('Y-m-d H:i:s') : $this->max,
+            $this->format($this->min),
+            $this->format($this->max),
         );
     }
 }

@@ -4,15 +4,25 @@ declare(strict_types=1);
 
 namespace Mewtonium\Vanguard\Rules;
 
-use Mewtonium\Vanguard\Contracts\ValidatesDatesOrNormalStrings;
+use Mewtonium\Vanguard\Concerns\PreparesDate;
+use Mewtonium\Vanguard\Contracts\PreparesValue;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class Equal extends Rule implements ValidatesDatesOrNormalStrings
+final class Equal extends BaseRule implements PreparesValue
 {
+    use PreparesDate;
+
+    protected float|int|string|\DateTimeInterface $to;
+
     public function __construct(
-        protected float|int|string|\DateTimeInterface $to,
+        float|int|string|\DateTimeInterface $to,
         ?string $message = null,
     ) {
+        // Equality may legitimately target a non-date string, so cast leniently.
+        $this->lenient = true;
+
+        $this->to = $this->prepare($to);
+
         parent::__construct($message);
     }
 
@@ -28,11 +38,7 @@ final class Equal extends Rule implements ValidatesDatesOrNormalStrings
         return sprintf(
             'The %s field must be equal to %s.',
             $this->field,
-            match (true) {
-                is_string($this->to) => "'{$this->to}'",
-                $this->to instanceof \DateTimeInterface => $this->to->format('Y-m-d H:i:s'),
-                default => $this->to,
-            },
+            is_string($this->to) ? "'{$this->to}'" : $this->format($this->to),
         );
     }
 }

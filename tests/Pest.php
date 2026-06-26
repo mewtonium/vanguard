@@ -39,7 +39,17 @@ expect()->extend('toBeOne', fn () => $this->toBe(1));
 |
 */
 
-function something(): void
+/**
+ * Run the callback with PHP's error handler silenced, so an expected native
+ * warning (e.g. preg_match() on an invalid pattern) doesn't make the test risky.
+ */
+function withoutErrorHandler(Closure $callback): mixed
 {
-    // ..
+    set_error_handler(static fn (): bool => true);
+
+    try {
+        return $callback();
+    } finally {
+        restore_error_handler();
+    }
 }
