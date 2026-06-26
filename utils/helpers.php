@@ -38,13 +38,21 @@ if (! function_exists('to_date')) {
                 ? DateTimeImmutable::createFromFormat($format, $datetime)
                 : DateTime::createFromFormat($format, $datetime);
 
-            if ($date !== false) {
-                return match ($format) {
-                    'Y-m-d' => $date->setTime(hour: 0, minute: 0, second: 0),
-                    'Y-m-d H:i' => $date->setTime(hour: (int) $date->format('H'), minute: (int) $date->format('i'), second: 0),
-                    'Y-m-d H:i:s' => $date,
-                };
+            $errors = $immutable
+                ? DateTimeImmutable::getLastErrors()
+                : DateTime::getLastErrors();
+
+            // Reject impossible dates that PHP would otherwise silently roll over
+            // e.g. `2024-02-31` becoming `2024-03-02`
+            if ($date === false || ($errors && ($errors['warning_count'] > 0 || $errors['error_count'] > 0))) {
+                continue;
             }
+
+            return match ($format) {
+                'Y-m-d' => $date->setTime(hour: 0, minute: 0, second: 0),
+                'Y-m-d H:i' => $date->setTime(hour: (int) $date->format('H'), minute: (int) $date->format('i'), second: 0),
+                'Y-m-d H:i:s' => $date,
+            };
         }
 
         if ($throw) {

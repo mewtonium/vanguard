@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Mewtonium\Vanguard\Rules;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class Required extends Rule
+final class Required extends BaseRule
 {
     public function __construct(?string $message = null)
     {

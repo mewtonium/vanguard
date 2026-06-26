@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Mewtonium\Vanguard\Rules;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class MinLength extends Rule
+final class MinLength extends BaseRule
 {
     public function __construct(
         protected int $length,

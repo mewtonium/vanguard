@@ -1,5 +1,7 @@
+/.idea
 /.phpunit.cache
 /.vscode
+/index.php
 /tests/Coverage
 /vendor
 .DS_Store

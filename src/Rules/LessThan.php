@@ -4,15 +4,22 @@ declare(strict_types=1);
 
 namespace Mewtonium\Vanguard\Rules;
 
-use Mewtonium\Vanguard\Contracts\ValidatesDates;
+use Mewtonium\Vanguard\Concerns\PreparesDate;
+use Mewtonium\Vanguard\Contracts\PreparesValue;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class LessThan extends Rule implements ValidatesDates
+final class LessThan extends BaseRule implements PreparesValue
 {
+    use PreparesDate;
+
+    protected int|float|string|\DateTimeInterface $max;
+
     public function __construct(
-        protected float|int|string|\DateTimeInterface $max,
+        int|float|string|\DateTimeInterface $max,
         ?string $message = null,
     ) {
+        $this->max = $this->prepare($max);
+
         parent::__construct($message);
     }
 
@@ -26,7 +33,7 @@ final class LessThan extends Rule implements ValidatesDates
         return sprintf(
             'The %s field must be less than %s.',
             $this->field,
-            $this->max instanceof \DateTimeInterface ? $this->max->format('Y-m-d H:i:s') : $this->max,
+            $this->format($this->max),
         );
     }
 }

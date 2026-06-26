@@ -4,15 +4,22 @@ declare(strict_types=1);
 
 namespace Mewtonium\Vanguard\Rules;
 
-use Mewtonium\Vanguard\Contracts\ValidatesDates;
+use Mewtonium\Vanguard\Concerns\PreparesDate;
+use Mewtonium\Vanguard\Contracts\PreparesValue;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class GreaterThan extends Rule implements ValidatesDates
+final class GreaterThan extends BaseRule implements PreparesValue
 {
+    use PreparesDate;
+
+    protected int|float|string|\DateTimeInterface $min;
+
     public function __construct(
-        protected float|int|string|\DateTimeInterface $min,
+        int|float|string|\DateTimeInterface $min,
         ?string $message = null,
     ) {
+        $this->min = $this->prepare($min);
+
         parent::__construct($message);
     }
 
@@ -26,7 +33,7 @@ final class GreaterThan extends Rule implements ValidatesDates
         return sprintf(
             'The %s field must be greater than %s.',
             $this->field,
-            $this->min instanceof \DateTimeInterface ? $this->min->format('Y-m-d H:i:s') : $this->min,
+            $this->format($this->min),
         );
     }
 }

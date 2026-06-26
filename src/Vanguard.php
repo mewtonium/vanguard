@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Mewtonium\Vanguard;
 
-use Mewtonium\Vanguard\Contracts\ValidatesDates;
-use Mewtonium\Vanguard\Contracts\ValidatesDatesOrNormalStrings;
-use Mewtonium\Vanguard\Rules\Rule;
+use Mewtonium\Vanguard\Contracts\PreparesValue;
+use Mewtonium\Vanguard\Contracts\Rule;
+use Mewtonium\Vanguard\Exceptions\RuleException;
+use Mewtonium\Vanguard\Rules\BaseRule;
 
 trait Vanguard
 {
@@ -25,42 +26,40 @@ trait Vanguard
         $reflection = new \ReflectionClass($this);
 
         foreach ($reflection->getProperties() as $property) {
-            if (! $property->isInitialized($this)) {
-                continue;
-            }
-
-            $value = $property->getValue($this);
-
             $attributes = $property->getAttributes(
                 Rule::class,
                 \ReflectionAttribute::IS_INSTANCEOF,
             );
 
+            if ($attributes === []) {
+                continue;
+            }
+
+            // Treat an uninitialised typed property as a missing value so that
+            // rules such as `Required` still fire instead of being skipped.
+            $value = $property->isInitialized($this)
+                ? $property->getValue($this)
+                : null;
+
             foreach ($attributes as $attribute) {
-                /** @var Rule */
+                $this->guardAgainstReservedRuleName($attribute->getName());
+
+                /** @var BaseRule */
                 $rule = $attribute->newInstance();
 
                 $this->setRuleProperty($rule, 'field', $property->getName());
 
-                if ($rule instanceof ValidatesDates || $rule instanceof ValidatesDatesOrNormalStrings) {
-                    $this->setDateRuleProperties($rule);
-                }
-
                 $this->setRuleProperty(
                     $rule,
                     name: 'value',
-                    value: match (true) {
-                        $rule instanceof ValidatesDates => is_string($value) ? to_date($value, throw: true) : $value,
-                        $rule instanceof ValidatesDatesOrNormalStrings => is_string($value) ? (to_date($value) ?? $value) : $value,
-                        default => $value,
-                    },
+                    value: $rule instanceof PreparesValue ? $rule->prepare($value) : $value,
                 );
 
                 if (! $rule->passes()) {
                     $this->errors->add(
                         field: $property->getName(),
                         rule: class_basename($rule),
-                        message: $rule->getMessage(),
+                        message: $rule->message ?? $rule->message(),
                     );
                 }
             }
@@ -84,44 +83,26 @@ trait Vanguard
     }
 
     /**
-     * Sets a property on the base `Rule` instance using Reflection.
+     * Sets a protected property on the given rule instance using Reflection.
      */
-    private function setRuleProperty(Rule &$rule, string $name, mixed $value): void
+    private function setRuleProperty(BaseRule $rule, string $name, mixed $value): void
     {
-        $reflection = new \ReflectionObject($rule);
-
-        $property = $reflection->getProperty($name);
-        $property->setAccessible(true);
-        $property->setValue($rule, $value);
+        (new \ReflectionObject($rule))->getProperty($name)->setValue($rule, $value);
     }
 
     /**
-     * Sets a date property on the `Rule` instance using Reflection.
+     * Rejects a custom rule whose name shadows a built-in Vanguard rule.
+     *
+     * @throws \Mewtonium\Vanguard\Exceptions\RuleException
      */
-    private function setDateRuleProperties(Rule &$rule): void
+    private function guardAgainstReservedRuleName(string $rule): void
     {
-        $reflection = new \ReflectionObject($rule);
+        $builtIn = 'Mewtonium\\Vanguard\\Rules\\' . class_basename($rule);
 
-        $parentProperties = array_map(
-            array: (new \ReflectionClass(Rule::class))->getProperties(),
-            callback: fn (\ReflectionProperty $property) => $property->getName(),
-        );
-
-        foreach ($reflection->getProperties() as $property) {
-            if (in_array($property->getName(), $parentProperties)) {
-                continue;
-            }
-
-            if (is_string($value = $property->getValue($rule))) {
-                $date = to_date(
-                    $value,
-                    throw: $rule instanceof ValidatesDates,
-                );
-
-                if (! is_null($date)) {
-                    $this->setRuleProperty($rule, $property->getName(), $date);
-                }
-            }
+        if ($rule !== $builtIn && class_exists($builtIn)) {
+            throw new RuleException(
+                'The [' . class_basename($rule) . '] rule already exists as a built-in Vanguard rule.',
+            );
         }
     }
 }

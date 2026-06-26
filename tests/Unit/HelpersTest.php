@@ -26,6 +26,11 @@ test('the `to_date` helper works correctly', function (): void {
     expect(to_date('today'))->toBeNull();
     expect(to_date('2025-01-01T00:00:00+0000'))->toBeNull();
 
+    // Impossible dates must be rejected rather than silently rolled over.
+    expect(to_date('2024-02-31'))->toBeNull();
+    expect(to_date('2024-13-01'))->toBeNull();
+    expect(to_date('2025-00-10'))->toBeNull();
+
     expect(fn () => to_date('invalid-date', throw: true))
         ->toThrow(
             \DateException::class,

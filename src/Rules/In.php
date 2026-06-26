@@ -7,7 +7,7 @@ namespace Mewtonium\Vanguard\Rules;
 use Mewtonium\Vanguard\Exceptions\RuleException;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class In extends Rule
+final class In extends BaseRule
 {
     public function __construct(
         protected array $values = [],
