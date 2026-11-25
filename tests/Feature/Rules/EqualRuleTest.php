@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
+use Mewtonium\Vanguard\Rules\Equal;
 use Mewtonium\Vanguard\Tests\Fixtures\Forms\EqualRuleForm;
+use Mewtonium\Vanguard\Vanguard;
 
 test('the rule passes validation', function (): void {
     $form = new EqualRuleForm(
@@ -51,4 +53,21 @@ test('a custom validation message can be set', function (): void {
     $form->validate();
 
     expect($form->errors()->first('str2'))->toBe('The value must equal "testing"');
+});
+
+test('a date never equals a number', function (): void {
+    $form = new class (date: '2025-01-01') {
+        use Vanguard;
+
+        public function __construct(
+            #[Equal(1)]
+            protected string $date,
+        ) {
+            //
+        }
+    };
+
+    $form->validate();
+
+    expect($form->errors()->first('date'))->toBe('The date field must be equal to 1.');
 });

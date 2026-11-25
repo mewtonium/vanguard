@@ -37,7 +37,7 @@
         "assign_null_coalescing_to_coalesce_equal": true,
         "explicit_indirect_variable": true,
         "method_argument_space": {
-            "on_multiline": "ensure_fully_multiline"
+            "on_multiline": "ignore"
         },
         "class_attributes_separation": {
             "elements": {

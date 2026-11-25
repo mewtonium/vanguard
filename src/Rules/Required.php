@@ -5,28 +5,23 @@ declare(strict_types=1);
 namespace Mewtonium\Vanguard\Rules;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class Required extends BaseRule
+final class Required extends Rule
 {
-    public function __construct(?string $message = null)
+    public function passes(mixed $value): bool
     {
-        parent::__construct($message);
-    }
-
-    public function passes(): bool
-    {
-        if (is_string($this->value)) {
-            return mb_trim($this->value) !== '';
+        if (is_string($value)) {
+            return mb_trim($value) !== '';
         }
 
-        if (is_array($this->value)) {
-            return count($this->value) > 0;
+        if (is_array($value)) {
+            return count($value) > 0;
         }
 
-        return $this->value !== null;
+        return $value !== null;
     }
 
     public function message(): string
     {
-        return "The {$this->field} field is required.";
+        return 'The :field field is required.';
     }
 }

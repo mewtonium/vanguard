@@ -31,10 +31,10 @@ test('the rule fails validation', function (): void {
 
     $form->validate();
 
-    expect($form->errors()->first('val3'))->toBe('The val3 field must be a minimum of 5 characters long.');
+    expect($form->errors()->first('val3'))->toBe('The val3 field must be at least 5 characters.');
     expect(array_key_exists('MinLength', $form->errors()->get('val3')))->toBeTrue();
 
-    expect($form->errors()->first('val4'))->toBe('The val4 field must be a minimum of 5 items in size.');
+    expect($form->errors()->first('val4'))->toBe('The val4 field must have at least 5 items.');
     expect(array_key_exists('MinLength', $form->errors()->get('val4')))->toBeTrue();
 });
 

@@ -1,0 +1,38 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use Mewtonium\Vanguard\Console\MakeRuleCommand;
+
+$autoloaders = [
+    $GLOBALS['_composer_autoload_path'] ?? null,
+    __DIR__ . '/../vendor/autoload.php',
+    __DIR__ . '/../../../autoload.php',
+];
+
+foreach ($autoloaders as $autoloader) {
+    if ($autoloader !== null && is_file($autoloader)) {
+        require $autoloader;
+
+        break;
+    }
+}
+
+if (! class_exists(MakeRuleCommand::class)) {
+    fwrite(STDERR, "Unable to locate Composer's autoloader. Run `composer install` first." . PHP_EOL);
+
+    exit(1);
+}
+
+$arguments = array_slice($argv, 1);
+
+if (($arguments[0] ?? null) !== 'make:rule') {
+    $help = in_array($arguments[0] ?? '--help', ['--help', '-h', 'help'], true);
+
+    fwrite($help ? STDOUT : STDERR, MakeRuleCommand::usage());
+
+    exit($help ? 0 : 1);
+}
+
+exit((new MakeRuleCommand((string) getcwd()))->run(array_slice($arguments, 1)));

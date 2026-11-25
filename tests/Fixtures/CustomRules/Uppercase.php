@@ -4,22 +4,18 @@ declare(strict_types=1);
 
 namespace Mewtonium\Vanguard\Tests\Fixtures\CustomRules;
 
-use Mewtonium\Vanguard\Rules\BaseRule;
+use Mewtonium\Vanguard\Rules\Rule;
 
-/**
- * A custom rule authored the recommended way: by extending the abstract
- * {@see BaseRule} class, which provides `$field`/`$value` injection.
- */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class Uppercase extends BaseRule
+final class Uppercase extends Rule
 {
-    public function passes(): bool
+    public function passes(mixed $value): bool
     {
-        return is_string($this->value) && mb_strtoupper($this->value) === $this->value;
+        return is_string($value) && mb_strtoupper($value) === $value;
     }
 
     public function message(): string
     {
-        return "The {$this->field} field must be uppercase.";
+        return 'The :field field must be uppercase.';
     }
 }

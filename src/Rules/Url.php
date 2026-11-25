@@ -5,21 +5,16 @@ declare(strict_types=1);
 namespace Mewtonium\Vanguard\Rules;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class Url extends BaseRule
+final class Url extends Rule
 {
-    public function __construct(?string $message = null)
+    public function passes(mixed $value): bool
     {
-        parent::__construct($message);
-    }
-
-    public function passes(): bool
-    {
-        return is_string($this->value)
-            && filter_var($this->value, FILTER_VALIDATE_URL) !== false;
+        return is_string($value)
+            && filter_var($value, FILTER_VALIDATE_URL) !== false;
     }
 
     public function message(): string
     {
-        return "The {$this->field} field must be a valid URL.";
+        return 'The :field field must be a valid URL.';
     }
 }

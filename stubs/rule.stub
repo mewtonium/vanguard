@@ -1,0 +1,21 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use Mewtonium\Vanguard\Rules\Rule;
+
+#[\Attribute(\Attribute::TARGET_PROPERTY)]
+final class {{ class }} extends Rule
+{
+    public function passes(mixed $value): bool
+    {
+        return false;
+    }
+
+    public function message(): string
+    {
+        return 'The :field field is invalid.';
+    }
+}

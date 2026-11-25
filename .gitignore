@@ -5,4 +5,5 @@
 /tests/Coverage
 /vendor
 .DS_Store
+.mcp.json
 .phpunit.result.cache
