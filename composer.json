@@ -3,6 +3,9 @@
     "description": "A simple validation library using PHP attributes.",
     "type": "library",
     "license": "MIT",
+    "bin": [
+        "bin/vanguard"
+    ],
     "autoload": {
         "psr-4": {
             "Mewtonium\\Vanguard\\": "src/"
