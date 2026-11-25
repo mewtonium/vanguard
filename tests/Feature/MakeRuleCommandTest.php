@@ -200,7 +200,8 @@ test('it reports an invalid composer.json', function (): void {
     [$code, , $error] = makeRule($this->root, 'Uppercase');
 
     expect($code)->toBe(1);
-    expect($error)->toContain("Unable to read [{$this->root}/composer.json]: Syntax error.");
+    // PHP 8.6 appends the error's location, e.g. "Syntax error near location 1:34".
+    expect($error)->toContain("Unable to read [{$this->root}/composer.json]: Syntax error");
     expect(is_dir("{$this->root}/src"))->toBeFalse();
 });
 
