@@ -5,40 +5,38 @@ declare(strict_types=1);
 namespace Mewtonium\Vanguard\Rules;
 
 use Mewtonium\Vanguard\Concerns\PreparesDate;
-use Mewtonium\Vanguard\Contracts\PreparesValue;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class Equal extends BaseRule implements PreparesValue
+final class Equal extends Rule
 {
     use PreparesDate;
 
-    protected float|int|string|\DateTimeInterface $to;
+    protected bool $lenient = true;
 
     public function __construct(
-        float|int|string|\DateTimeInterface $to,
-        ?string $message = null,
+        protected float|int|string|\DateTimeInterface $to,
+        public ?string $message = null,
     ) {
-        // Equality may legitimately target a non-date string, so cast leniently.
-        $this->lenient = true;
-
-        $this->to = $this->prepare($to);
-
-        parent::__construct($message);
+        //
     }
 
-    public function passes(): bool
+    public function passes(mixed $value): bool
     {
-        return $this->value instanceof \DateTimeInterface
-            ? $this->value == $this->to
-            : $this->value === $this->to;
+        if ($value instanceof \DateTimeInterface && $this->to instanceof \DateTimeInterface) {
+            return $value == $this->to;
+        }
+
+        return $value === $this->to;
     }
 
     public function message(): string
     {
-        return sprintf(
-            'The %s field must be equal to %s.',
-            $this->field,
-            is_string($this->to) ? "'{$this->to}'" : $this->format($this->to),
-        );
+        return 'The :field field must be equal to :to.';
+    }
+
+    #[\Override]
+    protected function formatValueForMessage(mixed $value): string
+    {
+        return is_string($value) ? "'{$value}'" : parent::formatValueForMessage($value);
     }
 }

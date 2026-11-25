@@ -19,6 +19,20 @@ function numericForm(mixed $value): object
     };
 }
 
+function strictNumericForm(mixed $value): object
+{
+    return new class ($value) {
+        use Vanguard;
+
+        public function __construct(
+            #[Numeric(strict: true)]
+            protected mixed $amount,
+        ) {
+            //
+        }
+    };
+}
+
 test('the rule passes for numeric values', function (mixed $value): void {
     $form = numericForm($value);
     $form->validate();
@@ -32,3 +46,17 @@ test('the rule fails for non-numeric values', function (mixed $value): void {
 
     expect($form->errors()->first('amount'))->toBe('The amount field must be numeric.');
 })->with(['abc', '', true]);
+
+test('the strict rule passes for integers and floats', function (mixed $value): void {
+    $form = strictNumericForm($value);
+    $form->validate();
+
+    expect($form->invalid())->toBeFalse();
+})->with([10, 1.5]);
+
+test('the strict rule fails for numeric strings', function (mixed $value): void {
+    $form = strictNumericForm($value);
+    $form->validate();
+
+    expect($form->errors()->first('amount'))->toBe('The amount field must be numeric.');
+})->with(['42', '3.14', true]);

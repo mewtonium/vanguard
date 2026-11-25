@@ -7,28 +7,22 @@ namespace Mewtonium\Vanguard\Rules;
 use Mewtonium\Vanguard\Exceptions\RuleException;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class Regex extends BaseRule
+final class Regex extends Rule
 {
-    /**
-     * @param  string  $pattern  A trusted, developer-supplied PCRE pattern. The
-     *                           pattern is defined in your form, never derived
-     *                           from end-user input, so ReDoS exposure is your
-     *                           responsibility to manage when authoring it.
-     */
     public function __construct(
         protected string $pattern,
-        ?string $message = null,
+        public ?string $message = null,
     ) {
-        parent::__construct($message);
+        //
     }
 
-    public function passes(): bool
+    public function passes(mixed $value): bool
     {
-        if (! is_string($this->value)) {
+        if (! is_string($value)) {
             return false;
         }
 
-        $result = preg_match($this->pattern, $this->value);
+        $result = preg_match($this->pattern, $value);
 
         if ($result === false) {
             throw new RuleException('The pattern supplied to the [' . class_basename($this) . '] rule is invalid.');
@@ -39,6 +33,6 @@ final class Regex extends BaseRule
 
     public function message(): string
     {
-        return "The {$this->field} field is in an invalid format.";
+        return 'The :field field is in an invalid format.';
     }
 }

@@ -5,35 +5,26 @@ declare(strict_types=1);
 namespace Mewtonium\Vanguard\Rules;
 
 use Mewtonium\Vanguard\Concerns\PreparesDate;
-use Mewtonium\Vanguard\Contracts\PreparesValue;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class GreaterThan extends BaseRule implements PreparesValue
+final class GreaterThan extends Rule
 {
     use PreparesDate;
 
-    protected int|float|string|\DateTimeInterface $min;
-
     public function __construct(
-        int|float|string|\DateTimeInterface $min,
-        ?string $message = null,
+        protected int|float|string|\DateTimeInterface $min,
+        public ?string $message = null,
     ) {
-        $this->min = $this->prepare($min);
-
-        parent::__construct($message);
+        //
     }
 
-    public function passes(): bool
+    public function passes(mixed $value): bool
     {
-        return $this->value > $this->min;
+        return $value > $this->min;
     }
 
     public function message(): string
     {
-        return sprintf(
-            'The %s field must be greater than %s.',
-            $this->field,
-            $this->format($this->min),
-        );
+        return 'The :field field must be greater than :min.';
     }
 }

@@ -5,20 +5,15 @@ declare(strict_types=1);
 namespace Mewtonium\Vanguard\Rules;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-final class Alpha extends BaseRule
+final class Alpha extends Rule
 {
-    public function __construct(?string $message = null)
+    public function passes(mixed $value): bool
     {
-        parent::__construct($message);
-    }
-
-    public function passes(): bool
-    {
-        return is_string($this->value) && ctype_alpha($this->value);
+        return is_string($value) && ctype_alpha($value);
     }
 
     public function message(): string
     {
-        return "The {$this->field} field must only contain letters.";
+        return 'The :field field must only contain letters.';
     }
 }
