@@ -1,12 +1,14 @@
 # Vanguard - PHP Attribute-Based Validation Library
 
 > [!CAUTION]
-> 🛑 This package is intended for demo purposes only and is **<u>not</u>** suitable for production use. Please do not use it in live or production environments. 🛑
+> This package is intended for demo purposes only and is **<u>not</u>** suitable for production use.
 
 Vanguard is a simple, dependency-free, attribute-based validation library for PHP, providing a clean and easy way to
 validate data using attributes on class properties.
 
 ```php
+<?php
+
 final class SignupForm
 {
     use Vanguard;
@@ -60,6 +62,8 @@ composer require mewtonium/vanguard
 Add the `Mewtonium\Vanguard\Vanguard` trait to a class, put rule attributes on its properties, then call `validate()`:
 
 ```php
+<?php
+
 use Mewtonium\Vanguard\Rules\Between;
 use Mewtonium\Vanguard\Rules\Email;
 use Mewtonium\Vanguard\Rules\GreaterOrEqual;
@@ -110,11 +114,8 @@ $form->validate();
 if ($form->invalid()) {
     $errors = $form->errors()->all();
 }
-```
 
-`$errors` holds each failed rule's message, grouped by field and keyed by rule name:
-
-```php
+/*
 [
     'lastName' => [
         'Required' => 'Please provide your last name.',
@@ -133,7 +134,10 @@ if ($form->invalid()) {
         'GreaterOrEqual' => 'The date field must be greater than or equal to 2025-01-01 00:00:00.',
     ],
 ]
+*/
 ```
+
+`errors()->all()` returns each failed rule's message, grouped by field and keyed by rule name.
 
 > [!IMPORTANT]
 > Vanguard performs <u>validation only</u>. It does not sanitise or modify your input data in any way. Rules may convert values internally - e.g. date strings to date objects - but your input data is left unchanged. Ensure you handle sanitisation separately.
@@ -167,6 +171,8 @@ see [Custom messages](#custom-messages).
 Validates that the value is a string of ASCII letters only.
 
 ```php
+<?php
+
 use Mewtonium\Vanguard\Rules\Alpha;
 
 #[Alpha]
@@ -180,6 +186,8 @@ protected string $name;
 Validates that the value is a string of ASCII letters and digits only.
 
 ```php
+<?php
+
 use Mewtonium\Vanguard\Rules\AlphaNum;
 
 #[AlphaNum]
@@ -193,6 +201,8 @@ protected string $username;
 Validates that the value is between `min` and `max`, inclusive. Works with numbers and [dates](#working-with-dates).
 
 ```php
+<?php
+
 use Mewtonium\Vanguard\Rules\Between;
 
 #[Between(1, 100)]
@@ -210,6 +220,8 @@ Validates that the value is a boolean. Accepts `true`, `false`, `1`, `0`, `'1'` 
 `true` and `false` pass.
 
 ```php
+<?php
+
 use Mewtonium\Vanguard\Rules\Boolean;
 
 #[Boolean]
@@ -226,6 +238,8 @@ protected bool $subscribed;
 Validates that the value is a valid email address using `FILTER_VALIDATE_EMAIL`.
 
 ```php
+<?php
+
 use Mewtonium\Vanguard\Rules\Email;
 
 #[Email]
@@ -240,6 +254,8 @@ Validates that the value is identical (`===`) to `to`. If both are [date strings
 compared as dates.
 
 ```php
+<?php
+
 use Mewtonium\Vanguard\Rules\Equal;
 
 #[Equal(30)]
@@ -256,6 +272,8 @@ protected string $date;
 Validates that the value is greater than or equal to `min`. Works with numbers and [dates](#working-with-dates).
 
 ```php
+<?php
+
 use Mewtonium\Vanguard\Rules\GreaterOrEqual;
 
 #[GreaterOrEqual(30)]
@@ -272,6 +290,8 @@ protected string $date;
 Validates that the value is strictly greater than `min`. Works with numbers and [dates](#working-with-dates).
 
 ```php
+<?php
+
 use Mewtonium\Vanguard\Rules\GreaterThan;
 
 #[GreaterThan(30)]
@@ -288,6 +308,8 @@ protected string $date;
 Validates that the value is one of `values`. The comparison is loose, so `'1'` matches `1`.
 
 ```php
+<?php
+
 use Mewtonium\Vanguard\Rules\In;
 
 #[In(['GB', 'FR', 'DE'])]
@@ -302,6 +324,8 @@ Validates that the value is an integer or an integer string such as `'42'`. Bool
 fail. With `strict: true`, only integers pass.
 
 ```php
+<?php
+
 use Mewtonium\Vanguard\Rules\Integer;
 
 #[Integer]
@@ -318,6 +342,8 @@ protected mixed $quantity;
 Validates that the value is less than or equal to `max`. Works with numbers and [dates](#working-with-dates).
 
 ```php
+<?php
+
 use Mewtonium\Vanguard\Rules\LessOrEqual;
 
 #[LessOrEqual(30)]
@@ -334,6 +360,8 @@ protected string $date;
 Validates that the value is strictly less than `max`. Works with numbers and [dates](#working-with-dates).
 
 ```php
+<?php
+
 use Mewtonium\Vanguard\Rules\LessThan;
 
 #[LessThan(30)]
@@ -350,6 +378,8 @@ protected string $date;
 Validates that a string has at most `length` characters (multibyte-aware), or an array has at most `length` items.
 
 ```php
+<?php
+
 use Mewtonium\Vanguard\Rules\MaxLength;
 
 #[MaxLength(255)]
@@ -366,6 +396,8 @@ protected array $tags;
 Validates that a string has at least `length` characters (multibyte-aware), or an array has at least `length` items.
 
 ```php
+<?php
+
 use Mewtonium\Vanguard\Rules\MinLength;
 
 #[MinLength(3)]
@@ -383,6 +415,8 @@ Validates that the value is an integer, a float or a numeric string. With `stric
 pass.
 
 ```php
+<?php
+
 use Mewtonium\Vanguard\Rules\Numeric;
 
 #[Numeric]
@@ -402,6 +436,8 @@ Validates that the value is a string matching the given regular expression `patt
 > Write regex patterns yourself and never build them from user input. Vanguard doesn't check patterns for catastrophic backtracking (ReDoS), so make sure yours aren't vulnerable to it.
 
 ```php
+<?php
+
 use Mewtonium\Vanguard\Rules\Regex;
 
 #[Regex('/^[A-Z]{2}-\d{3}$/')]
@@ -415,6 +451,8 @@ protected string $reference;
 Validates that the value isn't `null`, an empty or whitespace-only string, or an empty array.
 
 ```php
+<?php
+
 use Mewtonium\Vanguard\Rules\Required;
 
 #[Required]
@@ -428,6 +466,8 @@ protected string $name;
 Validates that the value is a string holding a valid URL using `FILTER_VALIDATE_URL`.
 
 ```php
+<?php
+
 use Mewtonium\Vanguard\Rules\Url;
 
 #[Url]
@@ -476,6 +516,8 @@ both in the rule's arguments and in the value:
 Impossible dates such as `2024-02-31` are rejected rather than silently rolled over into March.
 
 ```php
+<?php
+
 #[GreaterOrEqual('2025-01-01')]
 protected string $startsOn;
 
@@ -500,6 +542,8 @@ Dates in failure messages are formatted as `Y-m-d H:i:s`.
 Pass `message` to any rule to replace its default message:
 
 ```php
+<?php
+
 #[Required(message: 'Please enter your first name.')]
 #[MinLength(2, message: 'Your last name must be at least 2 characters long.')]
 ```
@@ -514,6 +558,8 @@ Default and custom messages can both use placeholders:
 | `:<argument>` | The value of the rule's argument with that name, e.g. `:min`, `:max`, `:values` |
 
 ```php
+<?php
+
 #[Between(18, 99, message: 'You must be between :min and :max to sign up.')]
 protected int $age;
 // "You must be between 18 and 99 to sign up."
@@ -538,6 +584,8 @@ To choose a word based on a placeholder's value, put a `{singular|plural}` group
 singular form is used when the value is `1`, or an array with one item. Anything else uses the plural form:
 
 ```php
+<?php
+
 #[MaxLength(3, message: 'You can add up to :length {tag|tags}.')]
 protected array $tags;
 // MaxLength(1) → "You can add up to 1 tag."
@@ -556,6 +604,8 @@ or without a `|` inside, are left as they are.
 After `validate()`, use `invalid()` to see whether anything failed, and `errors()` to get the `ErrorBag`:
 
 ```php
+<?php
+
 $form->validate();
 
 if ($form->invalid()) {
@@ -579,6 +629,8 @@ if ($form->invalid()) {
 Extend `Mewtonium\Vanguard\Rules\Rule`, add the `#[\Attribute]` attribute, and implement `passes()` and `message()`:
 
 ```php
+<?php
+
 use Mewtonium\Vanguard\Rules\Rule;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
@@ -599,6 +651,8 @@ final class Uppercase extends Rule
 Use it like any built-in rule, custom `message` included:
 
 ```php
+<?php
+
 #[Required, Uppercase]
 protected string $code;
 
@@ -643,6 +697,8 @@ Declare arguments as promoted constructor properties and include `public ?string
 Each argument is available as a placeholder:
 
 ```php
+<?php
+
 use Mewtonium\Vanguard\Rules\Rule;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
@@ -668,6 +724,8 @@ final class MultipleOf extends Rule
 ```
 
 ```php
+<?php
+
 #[MultipleOf(5)]
 protected int $quantity;
 // "The quantity field must be a multiple of 5."
@@ -678,6 +736,8 @@ return a different message depending on what was submitted. For example, the bui
 characters for strings and items for arrays:
 
 ```php
+<?php
+
 public function message(): string
 {
     return is_array($this->value)
@@ -695,6 +755,8 @@ For dates, use the `Mewtonium\Vanguard\Concerns\PreparesDate` trait. It applies 
 [strict date conversion](#working-with-dates) as the built-in comparison rules:
 
 ```php
+<?php
+
 use Mewtonium\Vanguard\Concerns\PreparesDate;
 use Mewtonium\Vanguard\Rules\Rule;
 
@@ -723,6 +785,8 @@ final class After extends Rule
 ```
 
 ```php
+<?php
+
 #[After('2025-01-01')]
 protected string $startsAt;
 // "The startsAt field must be after 2025-01-01 00:00:00."
@@ -737,6 +801,8 @@ For example, `PreparesDate` throws a `DateException` for a string that isn't a v
 also check equality for other data types), so it keeps the string as-is:
 
 ```php
+<?php
+
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 final class Same extends Rule
 {
@@ -751,6 +817,8 @@ final class Same extends Rule
 This works for any conversion, not just dates. For example, turning strings into an enum:
 
 ```php
+<?php
+
 #[\Override]
 public function prepare(mixed $value): mixed
 {
@@ -764,6 +832,8 @@ public function prepare(mixed $value): mixed
 appear, and call the parent for any you want formatted as normal. For example, `Equal` wraps strings in quotes:
 
 ```php
+<?php
+
 #[\Override]
 protected function formatValueForMessage(mixed $value): string
 {
